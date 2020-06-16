@@ -1,12 +1,33 @@
 # global-covid-yll
 Global years lost of life lost to COVID-19
 
-This is the data repository for the project "Global years of life lost to COVID-19", by Héctor Pifarré i Arolas, Enrique Acosta, Guillem López Casasnovas, Adeline Lo, Catia Nicodemo, Tim Riffe and Mikko Myrskylä. All code included to reproduce analysis in the project
-For questions, please email hector.pifarre@upf.edu.
+This is the data repository for the project "Global years of life lost to COVID-19".
+
+- Héctor Pifarré i Arolas, Centre for Research in Health Economics, Universitat Pompeu Fabra. For questions regarding the repo, please email hector.pifarre@upf.edu.
+- Enrique Acosta, Max Planck Institute for Demographic Research. 
+- Guillem López Casasnovas, Centre for Research in Health Economics, Universitat Pompeu Fabra. 
+- Adeline Lo, University of Wisconsin-Madison.
+- Catia Nicodemo: Centre of Organisation, Department of Primary Economics, University of Oxford. E
+- Tim Riffe, Max Planck Institute for Demographic Research. 
+- Mikko Myrskylä, Center for Social Data Science, University of Helsinki and Max Planck Institute for Demographic Research. 
+
+All code is included in the `Code` folder and data in `Data` folder, which reproduce analysis in the project.
+
+# References
+Data are drawn from several resources.
+- Global Burden of Disease Collaborative Network. Global Burden of Disease Study 2017 (GBD 2017) Results.
+Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018. Available from http://ghdx.healthdata.org/gbd-results-tool.
+- T. Riffe, E. Acosta. et. al. “COVerAGE-DB: A database of COVID-19 Cases and Deaths by Age.” OSF, 15 June 2020. doi:10.17605/OSF.IO/MPWJQ.
+
+
+
 # Code file descriptions
 - `B - Excess YLL.R`: calculations of YLL for excess mortality.
 - `B - Other Causes YLL.R`: calculations of YLL for other causes of mortality.
-- `B - Projected YLL.R`: calculations of YLL fo projected scenarios.
+- `B - Projected YLL.R`: calculations of YLL for projected scenarios.
+- `C - Compilation final measures.R`: creates measures cited throughout manuscript.
+- `C - Final tables.R`: creates tables in manuscript, and a few extra.
+- `C - Figures.R`: creates plots, some used in manuscript.
 
 # Data file descriptions
 
