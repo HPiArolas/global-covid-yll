@@ -16,6 +16,7 @@ All code is included in the `Code` folder and data in `Data` folder, which repro
 Data are drawn from several resources.
 - Global Burden of Disease Collaborative Network. Global Burden of Disease Study 2017 (GBD 2017) Results.
 Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018. Available from http://ghdx.healthdata.org/gbd-results-tool.
+- P. G. T. Walker,et al., The impact of COVID-19 and strategies for mitigation and suppressionin low- and middle-income countries, Science (2020).
 - T. Riffe, E. Acosta. et. al. “COVerAGE-DB: A database of COVID-19 Cases and Deaths by Age.” OSF, 15 June 2020. doi:10.17605/OSF.IO/MPWJQ.
 
 
