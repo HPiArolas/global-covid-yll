@@ -4,8 +4,9 @@ Global years lost of life lost to COVID-19
 This is the data repository for the project "Global years of life lost to COVID-19", by Héctor Pifarré i Arolas, Enrique Acosta, Guillem López Casasnovas, Adeline Lo, Catia Nicodemo, Tim Riffe and Mikko Myrskylä. All code included to reproduce analysis in the project
 For questions, please email hector.pifarre@upf.edu.
 # Code file descriptions
-`B - Excess YLL.R`: calculations of YLL for excess mortality. //
-`B - Other Causes YLL.R`: calculations of YLL for other causes of mortality.
+- `B - Excess YLL.R`: calculations of YLL for excess mortality.
+- `B - Other Causes YLL.R`: calculations of YLL for other causes of mortality.
+- `B - Projected YLL.R`: calculations of YLL fo projected scenarios.
 
 # Data file descriptions
 
