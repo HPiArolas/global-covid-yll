@@ -259,3 +259,4 @@ saveRDS(yll_rates,
 # Keeping also the projected deaths
 saveRDS(projected$proj.deaths.min,
         file=here("Data","projected_deaths_min_figures.rds"))
+
