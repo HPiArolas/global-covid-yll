@@ -26,6 +26,7 @@ library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(wpp2019)
+library(here)
 
 ###################################################################################################
 ##
@@ -34,12 +35,7 @@ library(wpp2019)
 ##
 ###################################################################################################
 
-#User
-AL<-FALSE
 
-# User defined directory
-if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared')
-}else{setwd("~/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared")}
 
 ###################################################################################################
 ##
@@ -50,64 +46,58 @@ if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID
 
 # Other Causes deaths: Transport
 ###################################################################################################
-if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/other_cause_transport.rds")
-}else{out<-readRDS("Data/Processed/other_cause_transport.rds")}
+out <- readRDS(here("Data","other_cause_transport.rds"))
 
 #choose YLL or Deaths
-out<-subset(out,Measure=="Deaths")
+out <-subset(out, Measure =="Deaths")
 ###################################################################################################
 
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
-if(!AL){nytexcess<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Excess deaths/NYTExcessDeaths.csv",sep=",")
-}else{nytexcess<-read.csv("Data/Excess deaths/NYTExcessDeaths.csv",sep=",")}
+# Needs to be included in repo
+nytexcess <- read.csv(here("Data", "NYTExcessDeaths.csv",
+                           sep=","))
+
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
-nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
+nytexcessv<-vnytexcess[which(nytexcess$Country%in%matched),]
 
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-if(!AL){sle.gbd<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_gbd_sle.2016.rds")
-}else{sle.gbd<-readRDS("Data/Processed/country_gbd_sle.2016.rds")}
+sle.gbd<-readRDS(here("Data","country_gbd_sle.2016.rds"))
+
 # Country specific life expectancies
-if(!AL){sle_both.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_both_sle_un.rds')
-}else{sle_both.un<-readRDS('Data/Processed/country_both_sle_un.rds')}
-if(!AL){sle_male.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_male_sle_un.rds')
-}else{sle_male.un<-readRDS('Data/Processed/country_male_sle_un.rds')}
-if(!AL){sle_female.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_female_sle_un.rds')
-}else{sle_female.un<-readRDS('Data/Processed/country_female_sle_un.rds')}
+sle_both.un   <- readRDS(here("Data","country_both_sle_un.rds"))
+sle_male.un   <- readRDS(here("Data","country_male_sle_un.rds"))
+sle_female.un <- readRDS(here("Data","country_female_sle_un.rds"))
 
 # Population
 ###################################################################################################
-#if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete.csv',row.names = 1)
-#}else{pop<-read.csv('Data/Processed/pop_complete.csv',row.names = 1)}
-if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete_2017.csv',row.names = 1)
-}else{pop<-read.csv('Data/Processed/pop_complete_2017.csv',row.names = 1)}
+pop           <- read.csv(here("Data","pop_complete_2017.csv"),
+                          row.names = 1)
 
 # List of countries
 ###################################################################################################
 # Country list file with full sample considered
-if(!AL){sample.countries<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/full sample list.csv",header=TRUE)
-}else{sample.countries<-read.csv("Data/full sample list.csv",header=TRUE)}
+sample.countries      <- read.csv(here("Data", "full sample list.csv"),
+                                  header = TRUE)
 # Saving them as a list
-sample.countries.list<-as.character(data.frame(sample.countries)[,1])
+sample.countries.list <-as.character(data.frame(sample.countries)[,1])
 # List of countries with no data
-no.data.countries<- c('Northern Ireland')
+no.data.countries     <- c('Northern Ireland')
 # Final list 
-countries<-sample.countries.list[which(is.element(sample.countries.list,no.data.countries)==FALSE)]
+countries <- sample.countries.list[which(is.element(sample.countries.list,no.data.countries)==FALSE)]
 # Match countries with data from Other Cause of Death
-countries<-intersect(countries,sort(unique(out$Country)))
+countries <-intersect(countries, sort(unique(out$Country)))
 
 # Standard population weights
 ###################################################################################################
 #  European standard
-if(!AL){file.pop.std.gbd<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.gbd.RDS")
-}else{file.pop.std.gbd<-paste("Data/Processed/pop_std.gbd.RDS")}
-pop_std.gbd<-readRDS(file.pop.std.gbd)
+
+pop_std.gbd <- readRDS(here("Data","pop_std.gbd.RDS"))
 #  GBD standard
-if(!AL){file.pop.std.esp<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.esp.RDS")
-}else{file.pop.std.esp<-paste("Data/Processed/pop_std.esp.RDS")}
-pop_std.esp<-readRDS(file.pop.std.esp)
+
+pop_std.esp <- readRDS(here("Data", "pop_std.esp.RDS"))
 
 ###################################################################################################
 ##
@@ -119,18 +109,18 @@ pop_std.esp<-readRDS(file.pop.std.esp)
 # Computes YLL with the GBD standard life and with country specific life tables
 
 # Which countries have gender 
-gender.count<-as.character(unique(out$Country[which(out$Sex=='f')]))
+gender.count        <- as.character(unique(out$Country[which(out$Sex=='f')]))
 # Coinciding for which we have data already collected, i.e. sample.countries
-gender.count.sample<-gender.count[which(is.element(gender.count,countries))]
+gender.count.sample <- gender.count[which(is.element(gender.count,countries))]
 
 # Total count in the out file, not necessarily in our sample
-total.count<-as.character(unique(out$Country[which(out$Sex=='b')]))
+total.count    <- as.character(unique(out$Country[which(out$Sex=='b')]))
 
 # Data holders
-yll.data.both<-vector("list",length=length(countries))
+yll.data.both  <- vector("list",length=length(countries))
 # Pick countries with male / female data
-countries_mf<-gender.count.sample
-yll.data.male<-yll.data.female<-vector("list",length=length(countries_mf))
+countries_mf   <- gender.count.sample
+yll.data.male  <- yll.data.female<-vector("list",length=length(countries_mf))
 
 
 ##  Both sexes
@@ -138,36 +128,36 @@ yll.data.male<-yll.data.female<-vector("list",length=length(countries_mf))
 for(i in 1:length(countries)){
   cat("Country=",countries[i],"\n")
   # choose national level data for both genders
-  c<-subset(out,Country==countries[i]&Sex=="b")  
+  c            <- subset(out,Country==countries[i]&Sex=="b")  
   # number of years lost per age -- standard SLE from GBD
-  c$YLL.gbd.b<-c$val*sle.gbd$sle 
+  c$YLL.gbd.b  <- c$val*sle.gbd$sle 
   # number of years lost per age -- country specific
-  tmp.sle.b<-subset(sle_both.un,country==countries[i])
-  c$YLL.un.b<-c$val*tmp.sle.b$sle_un 
+  tmp.sle.b    <- subset(sle_both.un,country==countries[i])
+  c$YLL.un.b   <- c$val*tmp.sle.b$sle_un 
   #create Excess_Deaths variable if in the list of names that match
   if(is.element(countries[i],matched)){
-    c$Excess_Deaths<-(c$val/sum(c$val))*nytexcess$ExcessDeaths[which(as.character(nytexcess$Country)==countries[i])]
+    c$Excess_Deaths <- (c$val/sum(c$val))*nytexcess$ExcessDeaths[which(as.character(nytexcess$Country)==countries[i])]
     #this second part is accessing the country's excess death value in nytexcess, such that it matches the current country from out we're working on atm
   }else{
-    c$Excess_Deaths<-c$val #if country isn't matched then use original Deaths data (so doesn't include uncounted covid d)
+    c$Excess_Deaths <- c$val #if country isn't matched then use original Deaths data (so doesn't include uncounted covid d)
   }
   # number of years lost with excess deaths -- standard SLE from GBD
-  c$YLL.gbd.b.ed<-c$Excess_Deaths*sle.gbd$sle
+  c$YLL.gbd.b.ed <- c$Excess_Deaths*sle.gbd$sle
   # number of years lost per age -- country specific
-  c$YLL.un.b.ed<-c$Excess_Deaths*tmp.sle.b$sle
+  c$YLL.un.b.ed  <- c$Excess_Deaths*tmp.sle.b$sle
   # subsetting to population
-  tmp.population<-subset(pop,Country==countries[i])
+  tmp.population <- subset(pop,Country==countries[i])
   # population count
-  c$Population<-tmp.population$Total
+  c$Population   <- tmp.population$Total
   # sex
   c$Sex<-c$Sex #? why is this here?
   # computing rates for each measure
-  c$YLL.rate.gbd.b<-(c$YLL.gbd.b/tmp.population$Total)*100000 
-  c$YLL.rate.un.b<-(c$YLL.un.b/tmp.population$Total)*100000 
-  c$YLL.rate.gbd.b.ed<-(c$YLL.gbd.b.ed/tmp.population$Total)*100000 
-  c$YLL.rate.un.b.ed<-(c$YLL.un.b.ed/tmp.population$Total)*100000 
+  c$YLL.rate.gbd.b     <- (c$YLL.gbd.b/tmp.population$Total)*100000 
+  c$YLL.rate.un.b      <- (c$YLL.un.b/tmp.population$Total)*100000 
+  c$YLL.rate.gbd.b.ed  <- (c$YLL.gbd.b.ed/tmp.population$Total)*100000 
+  c$YLL.rate.un.b.ed   <- (c$YLL.un.b.ed/tmp.population$Total)*100000 
   # reordering columns
-  yll.data.both[[i]]<-data.frame(Country=c$Country,
+  yll.data.both[[i]] <- data.frame(Country=c$Country,
                                  Date=c$Date,
                                  Sex=c$Sex,
                                  Age=c$Age,
@@ -186,49 +176,49 @@ for(i in 1:length(countries)){
                                  
   )
 }
-names(yll.data.both)<-countries
-yll.data.both.all<-do.call(rbind,yll.data.both)
+names(yll.data.both) <- countries
+yll.data.both.all    <- do.call(rbind,yll.data.both)
 # ver with countries 
-if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport-yll-b-list.rds") 
-}else{saveRDS(yll.data.both,file="Data/Processed/transport-yll-b-list.rds")}
+saveRDS(yll.data.both,
+        file = here("Data", "transport-yll-b-list.rds"))
 #this is the ver with all countries in one full dataframe
-if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport-yll-b.rds") 
-}else{saveRDS(yll.data.both.all,file="Data/Processed/transport-yll-b.rds")}
+saveRDS(yll.data.both.all,
+        file = here("Data", "transport-yll-b.rds"))
 
 ##  Male only
 ###################################################################################################
 for(i in 1:length(countries_mf)){
   cat("Country=",countries_mf[i],"\n")
-  c<-subset(out,Country==countries_mf[i]&Sex=="m")  
-  c<-c[which(c$Date==max(c$Date)),]
+  c           <-subset(out,Country==countries_mf[i]&Sex=="m")  
+  c           <-  c[which(c$Date==max(c$Date)),]
   # number of years lost with excess deaths -- standard SLE from GBD
-  c$YLL.gbd.m<-c$val*sle.gbd$sle
+  c$YLL.gbd.m <- c$val*sle.gbd$sle
   # using country specific data
-  tmp.sle<-subset(sle_male.un,country==countries_mf[i])
-  c$YLL.un.m<-c$val*tmp.sle$sle_un 
+  tmp.sle     <- subset(sle_male.un,country==countries_mf[i])
+  c$YLL.un.m  <- c$val*tmp.sle$sle_un 
   #create Excess_Deaths variable if in the list of names that match
   if(is.element(countries_mf[i],matched)){
-    c$Excess_Deaths<-(c$val/sum(c$val))*nytexcess$ExcessDeaths[which(as.character(nytexcess$Country)==countries_mf[i])]
+    c$Excess_Deaths <- (c$val/sum(c$val))*nytexcess$ExcessDeaths[which(as.character(nytexcess$Country)==countries_mf[i])]
    }else{
-    c$Excess_Deaths<-c$val
+    c$Excess_Deaths <- c$val
   }
   # standard gbd SLE
-  c$YLL.gbd.m.ed<-c$Excess_Deaths*sle.gbd$sle
+  c$YLL.gbd.m.ed <- c$Excess_Deaths*sle.gbd$sle
   # country specific SLE
-  c$YLL.un.m.ed<-c$Excess_Deaths*tmp.sle$sle_un
+  c$YLL.un.m.ed  <- c$Excess_Deaths*tmp.sle$sle_un
   # subsetting to population
-  tmp.population<-subset(pop,Country==countries[i])
+  tmp.population <- subset(pop,Country==countries[i])
   # population count
-  c$Population<-tmp.population$Male
+  c$Population   <- tmp.population$Male
   # sex
-  c$Sex<-c$Sex
+  c$Sex          <- c$Sex
   # computing rates for each measure
-  c$YLL.rate.gbd.m<-(c$YLL.gbd.m/tmp.population$Male)*100000 
-  c$YLL.rate.un.m<-(c$YLL.un.m/tmp.population$Male)*100000 
-  c$YLL.rate.gbd.m.ed<-(c$YLL.gbd.m.ed/tmp.population$Male)*100000 
-  c$YLL.rate.un.m.ed<-(c$YLL.un.m.ed/tmp.population$Male)*100000 
+  c$YLL.rate.gbd.m    <- (c$YLL.gbd.m/tmp.population$Male)*100000 
+  c$YLL.rate.un.m     <- (c$YLL.un.m/tmp.population$Male)*100000 
+  c$YLL.rate.gbd.m.ed <- (c$YLL.gbd.m.ed/tmp.population$Male)*100000 
+  c$YLL.rate.un.m.ed  <- (c$YLL.un.m.ed/tmp.population$Male)*100000 
   # reordering columns
-  yll.data.male[[i]]<-data.frame(Country=c$Country,
+  yll.data.male[[i]] <- data.frame(Country=c$Country,
                                  Date=c$Date,
                                  Sex=c$Sex,
                                  Age=c$Age,
@@ -247,14 +237,14 @@ for(i in 1:length(countries_mf)){
                                  
   )
 }
-names(yll.data.male)<-countries_mf
-yll.data.male.all<-do.call(rbind,yll.data.male)
+names(yll.data.male) < -countries_mf
+yll.data.male.all    <- do.call(rbind,yll.data.male)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.male,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport-yll-m-list.rds")
-}else{saveRDS(yll.data.male,file="Data/Processed/transport-yll-m-list.rds")}
+saveRDS(yll.data.male,
+        file = here("Data","transport-yll-m-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.male.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport-yll-m.rds") 
-}else{saveRDS(yll.data.male,file="Data/Processed/transport-yll-m.rds")}
+saveRDS(yll.data.male,
+        file = here("Data","transport-yll-m.rds"))
 ##  Female only
 ###################################################################################################
 for(i in 1:length(countries_mf)){
@@ -306,14 +296,14 @@ for(i in 1:length(countries_mf)){
                                    
   )
 }
-names(yll.data.female)<-countries_mf
-yll.data.female.all<-do.call(rbind,yll.data.female)
+names(yll.data.female) <- countries_mf
+yll.data.female.all    <- do.call(rbind,yll.data.female)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.female,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport-yll-f-list.rds")
-}else{saveRDS(yll.data.female,file="Data/Processed/transport-yll-f-list.rds")}
+saveRDS(yll.data.female,
+        file = here("Data","transport-yll-f-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.female.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-f.rds") 
-}else{saveRDS(yll.data.female,file="Data/Processed/transport-yll-f.rds")}
+saveRDS(yll.data.female,
+        file = here("Data","transport-yll-f.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL ABSOLUTE NUMBERS
@@ -336,9 +326,9 @@ colnames.yll.measures<-c('Country', 'Date.death', 'Date.edeath',
                          'YLL.gbd.f', 'YLL.un.f','YLL.gbd.f.ed', 'YLL.un.f.ed')
 
 # Data frame to store results
-YLL.measures<-as.data.frame(matrix(NA,nrow=length(countries),ncol=length(colnames.yll.measures)))
-colnames(YLL.measures)<-colnames.yll.measures
-Date.death<-Date.edeath<-as.Date(rep(NA,length(countries)))#dates
+YLL.measures            <- as.data.frame(matrix(NA,nrow=length(countries),ncol=length(colnames.yll.measures)))
+colnames(YLL.measures)  <- colnames.yll.measures
+Date.death<-Date.edeath <- as.Date(rep(NA,length(countries)))#dates
 ## Framework -- out of the loop
 ###################################################################################################
 # Countries  
@@ -359,8 +349,8 @@ YLL.measures$Date.death<-Date.death
 YLL.measures$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport_YLL_measures.rds") 
-}else{saveRDS(YLL.measures,file="Data/Processed/transport_YLL_measures.rds")}
+saveRDS(YLL.measures,
+        file = here("Data","transport_YLL_measures.rds"))
 
 ###################################################################################################
 ##
@@ -398,8 +388,8 @@ YLL.measures.rate.esp$Date.death<-Date.death
 YLL.measures.rate.esp$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport_YLL_measures_rate_esp.rds") 
-}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/transport_YLL_measures_rate_esp.rds")}
+saveRDS(YLL.measures.rate.esp,
+        file = here("Data","transport_YLL_measures_rate_esp.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD
@@ -437,8 +427,8 @@ YLL.measures.rate.gbd$Date.death<-Date.death
 YLL.measures.rate.gbd$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport_YLL_measures_rate_gbd.rds") 
-}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/transport_YLL_measures_rate_gbd.rds")}
+saveRDS(YLL.measures.rate.gbd,
+        file = here("Data", "transport_YLL_measures_rate_gbd.rds"))
 
 ###################################################################################################
 ##
@@ -447,11 +437,10 @@ if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - R
 ##
 ###################################################################################################
 
-if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport_YLL_measures.rds") 
-}else{dat<-readRDS(file="Data/Processed/transport_YLL_measures.rds")}
+dat     <- readRDS(file=here("Data","transport_YLL_measures.rds"))
 
-sumpop<-tapply(pop$Total,pop$Country,sum)
-dat$Pop<-sumpop[which(names(sumpop)%in%dat$Country)]
+sumpop  <- tapply(pop$Total,pop$Country,sum)
+dat$Pop <- sumpop[which(names(sumpop)%in%dat$Country)]
 
 rates<-dat[,c("YLL.gbd.b","YLL.un.b")]/dat$Pop *100000
 yll_rates<-as.data.frame(cbind(dat$Country,dat$Date.death,rates,dat$Pop))
@@ -461,22 +450,20 @@ names(yll_rates)<-c("Country","Date"
 
 
 # saving
-if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/transport_YLL_measures_rate_cpop.rds") 
-}else{saveRDS(yll_rates,file="Data/Processed/transport_YLL_measures_rate_cpop.rds")}
+saveRDS(yll_rates,
+        file = here("Data","transport_YLL_measures_rate_cpop.rds"))
 
 
 # Other Causes deaths: Heart (Cardiovascular diseases)
 ###################################################################################################
-if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/other_cause_heart.rds")
-}else{out<-readRDS("Data/Processed/other_cause_heart.rds")}
+out<-readRDS(here("Data","other_cause_heart.rds"))
 
 #choose YLL or Deaths
 out<-subset(out,Measure=="Deaths")
 ###################################################################################################
 
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
-if(!AL){nytexcess<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Excess deaths/NYTExcessDeaths.csv",sep=",")
-}else{nytexcess<-read.csv("Data/Excess deaths/NYTExcessDeaths.csv",sep=",")}
+nytexcess <- read.csv(here("Data","NYTExcessDeaths.csv"), sep = ",")
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
 nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
@@ -484,27 +471,20 @@ nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-if(!AL){sle.gbd<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_gbd_sle.2016.rds")
-}else{sle.gbd<-readRDS("Data/Processed/country_gbd_sle.2016.rds")}
+sle.gbd       <- readRDS(here("Data","country_gbd_sle.2016.rds"))
 # Country specific life expectancies
-if(!AL){sle_both.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_both_sle_un.rds')
-}else{sle_both.un<-readRDS('Data/Processed/country_both_sle_un.rds')}
-if(!AL){sle_male.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_male_sle_un.rds')
-}else{sle_male.un<-readRDS('Data/Processed/country_male_sle_un.rds')}
-if(!AL){sle_female.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_female_sle_un.rds')
-}else{sle_female.un<-readRDS('Data/Processed/country_female_sle_un.rds')}
+sle_both.un   <- readRDS(here("Data","country_both_sle_un.rds"))
+sle_male.un   <- readRDS(here("Data","country_male_sle_un.rds"))
+sle_female.un <- readRDS(here("Data","country_female_sle_un.rds"))
 
 # Population
 ###################################################################################################
-#if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete.csv',row.names = 1)
-#}else{pop<-read.csv('Data/Processed/pop_complete.csv',row.names = 1)}
-if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete_2017.csv',row.names = 1)
-}else{pop<-read.csv('Data/Processed/pop_complete_2017.csv',row.names = 1)}
+pop           <- read.csv(here("Data","pop_complete_2017.csv"),row.names = 1)
 # List of countries
 ###################################################################################################
 # Country list file with full sample considered
-if(!AL){sample.countries<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/full sample list.csv",header=TRUE)
-}else{sample.countries<-read.csv("Data/full sample list.csv",header=TRUE)}
+sample.countries <- read.csv(here("Data","full sample list.csv"),
+                           header=TRUE)
 # Saving them as a list
 sample.countries.list<-as.character(data.frame(sample.countries)[,1])
 # List of countries with no data
@@ -517,13 +497,9 @@ countries<-intersect(countries,sort(unique(out$Country)))
 # Standard population weights
 ###################################################################################################
 #  European standard
-if(!AL){file.pop.std.gbd<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.gbd.RDS")
-}else{file.pop.std.gbd<-paste("Data/Processed/pop_std.gbd.RDS")}
-pop_std.gbd<-readRDS(file.pop.std.gbd)
-#  GBD standard
-if(!AL){file.pop.std.esp<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.esp.RDS")
-}else{file.pop.std.esp<-paste("Data/Processed/pop_std.esp.RDS")}
-pop_std.esp<-readRDS(file.pop.std.esp)
+
+pop_std.gbd <- readRDS(here("Data","pop_std.gbd.RDS"))
+pop_std.esp <- readRDS(here("Data","pop_std.esp.RDS"))
 
 ###################################################################################################
 ##
@@ -604,11 +580,11 @@ for(i in 1:length(countries)){
 names(yll.data.both)<-countries
 yll.data.both.all<-do.call(rbind,yll.data.both)
 # ver with countries 
-if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart-yll-b-list.rds") 
-}else{saveRDS(yll.data.both,file="Data/Processed/heart-yll-b-list.rds")}
+saveRDS(yll.data.both,
+        file=here("Data""heart-yll-b-list.rds"))
 #this is the ver with all countries in one full dataframe
-if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart-yll-b.rds") 
-}else{saveRDS(yll.data.both.all,file="Data/Processed/heart-yll-b.rds")}
+saveRDS(yll.data.both.all,
+        file=here("Data""heart-yll-b.rds"))
 
 ##  Male only
 ###################################################################################################
@@ -665,11 +641,11 @@ for(i in 1:length(countries_mf)){
 names(yll.data.male)<-countries_mf
 yll.data.male.all<-do.call(rbind,yll.data.male)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.male,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart-yll-m-list.rds")
-}else{saveRDS(yll.data.male,file="Data/Processed/heart-yll-m-list.rds")}
+saveRDS(yll.data.male,
+        file = here("Data","heart-yll-m-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.male.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart-yll-m.rds") 
-}else{saveRDS(yll.data.male,file="Data/Processed/heart-yll-m.rds")}
+saveRDS(yll.data.male,
+        file = here("Data","heart-yll-m.rds"))
 ##  Female only
 ###################################################################################################
 for(i in 1:length(countries_mf)){
@@ -724,11 +700,11 @@ for(i in 1:length(countries_mf)){
 names(yll.data.female)<-countries_mf
 yll.data.female.all<-do.call(rbind,yll.data.female)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.female,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart-yll-f-list.rds")
-}else{saveRDS(yll.data.female,file="Data/Processed/heart-yll-f-list.rds")}
+saveRDS(yll.data.female,
+        file=here("Data","heart-yll-f-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.female.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-f.rds") 
-}else{saveRDS(yll.data.female,file="Data/Processed/heart-yll-f.rds")}
+aveRDS(yll.data.female,
+       file=here("Data","heart-yll-f.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL ABSOLUTE NUMBERS
@@ -774,8 +750,8 @@ YLL.measures$Date.death<-Date.death
 YLL.measures$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart_YLL_measures.rds") 
-}else{saveRDS(YLL.measures,file="Data/Processed/heart_YLL_measures.rds")}
+saveRDS(YLL.measures,
+        file=here("Data","heart_YLL_measures.rds"))
 
 ###################################################################################################
 ##
@@ -813,8 +789,9 @@ YLL.measures.rate.esp$Date.death<-Date.death
 YLL.measures.rate.esp$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart_YLL_measures_rate_esp.rds") 
-}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/heart_YLL_measures_rate_esp.rds")}
+
+saveRDS(YLL.measures.rate.esp,
+        file=here("Data","heart_YLL_measures_rate_esp.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD
@@ -852,8 +829,8 @@ YLL.measures.rate.gbd$Date.death<-Date.death
 YLL.measures.rate.gbd$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart_YLL_measures_rate_gbd.rds") 
-}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/heart_YLL_measures_rate_gbd.rds")}
+saveRDS(YLL.measures.rate.gbd,
+        file=here("Data","heart_YLL_measures_rate_gbd.rds"))
 
 ###################################################################################################
 ##
@@ -862,8 +839,7 @@ if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - R
 ##
 ###################################################################################################
 
-if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart_YLL_measures.rds") 
-}else{dat<-readRDS(file="Data/Processed/heart_YLL_measures.rds")}
+dat<-readRDS(file=here("Data","heart_YLL_measures.rds"))
 
 sumpop<-tapply(pop$Total,pop$Country,sum)
 dat$Pop<-sumpop[which(names(sumpop)%in%dat$Country)]
@@ -876,13 +852,12 @@ names(yll_rates)<-c("Country","Date"
 
 
 # saving
-if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/heart_YLL_measures_rate_cpop.rds") 
-}else{saveRDS(yll_rates,file="Data/Processed/heart_YLL_measures_rate_cpop.rds")}
+saveRDS(yll_rates,
+        file=here("Data","heart_YLL_measures_rate_cpop.rds"))
 
 # Other Causes deaths: Substance (Substance abuse)
 ###################################################################################################
-if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/other_cause_substance.rds")
-}else{out<-readRDS("Data/Processed/other_cause_substance.rds")}
+out <- readRDS("Data","other_cause_substance.rds")
 
 #choose YLL or Deaths
 out<-subset(out,Measure=="Deaths")
@@ -898,30 +873,23 @@ nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-if(!AL){sle.gbd<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_gbd_sle.2016.rds")
-}else{sle.gbd<-readRDS("Data/Processed/country_gbd_sle.2016.rds")}
+sle.gbd       <- readRDS(here("Data","country_gbd_sle.2016.rds"))
 # Country specific life expectancies
-if(!AL){sle_both.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_both_sle_un.rds')
-}else{sle_both.un<-readRDS('Data/Processed/country_both_sle_un.rds')}
-if(!AL){sle_male.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_male_sle_un.rds')
-}else{sle_male.un<-readRDS('Data/Processed/country_male_sle_un.rds')}
-if(!AL){sle_female.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_female_sle_un.rds')
-}else{sle_female.un<-readRDS('Data/Processed/country_female_sle_un.rds')}
+sle_both.un   <- readRDS(here("Data","country_both_sle_un.rds"))
+sle_male.un   <- readRDS(here("Data","country_male_sle_un.rds"))
+sle_female.un <- readRDS(here("Data","country_female_sle_un.rds"))
 
 # Population
 ###################################################################################################
-#if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete.csv',row.names = 1)
-#}else{pop<-read.csv('Data/Processed/pop_complete.csv',row.names = 1)}
-if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete_2017.csv',row.names = 1)
-}else{pop<-read.csv('Data/Processed/pop_complete_2017.csv',row.names = 1)}
+pop<-read.csv(here("Data","pop_complete_2017.csv"),
+              row.names = 1)
 
 # List of countries
 ###################################################################################################
 # Country list file with full sample considered
-if(!AL){sample.countries<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/full sample list.csv",header=TRUE)
-}else{sample.countries<-read.csv("Data/full sample list.csv",header=TRUE)}
+sample.countries <- read.csv(here("Data","full sample list.csv"), header=TRUE)
 # Saving them as a list
-sample.countries.list<-as.character(data.frame(sample.countries)[,1])
+sample.countries.list <- as.character(data.frame(sample.countries)[,1])
 # List of countries with no data
 no.data.countries<- c('Northern Ireland')
 # Final list 
@@ -932,13 +900,10 @@ countries<-intersect(countries,sort(unique(out$Country)))
 # Standard population weights
 ###################################################################################################
 #  European standard
-if(!AL){file.pop.std.gbd<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.gbd.RDS")
-}else{file.pop.std.gbd<-paste("Data/Processed/pop_std.gbd.RDS")}
-pop_std.gbd<-readRDS(file.pop.std.gbd)
+
+pop_std.gbd<-readRDS(here("Data","pop_std.gbd.RDS"))
 #  GBD standard
-if(!AL){file.pop.std.esp<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.esp.RDS")
-}else{file.pop.std.esp<-paste("Data/Processed/pop_std.esp.RDS")}
-pop_std.esp<-readRDS(file.pop.std.esp)
+pop_std.esp<-readRDS(here("Data","pop_std.esp.RDS"))
 
 ###################################################################################################
 ##
@@ -1019,11 +984,11 @@ for(i in 1:length(countries)){
 names(yll.data.both)<-countries
 yll.data.both.all<-do.call(rbind,yll.data.both)
 # ver with countries 
-if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance-yll-b-list.rds") 
-}else{saveRDS(yll.data.both,file="Data/Processed/substance-yll-b-list.rds")}
+saveRDS(yll.data.both,
+        file=here("Data","substance-yll-b-list.rds"))
 #this is the ver with all countries in one full dataframe
-if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance-yll-b.rds") 
-}else{saveRDS(yll.data.both.all,file="Data/Processed/substance-yll-b.rds")}
+saveRDS(yll.data.both.all,
+        file=here("Data","substance-yll-b.rds"))
 
 ##  Male only
 ###################################################################################################
@@ -1080,11 +1045,11 @@ for(i in 1:length(countries_mf)){
 names(yll.data.male)<-countries_mf
 yll.data.male.all<-do.call(rbind,yll.data.male)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.male,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance-yll-m-list.rds")
-}else{saveRDS(yll.data.male,file="Data/Processed/substance-yll-m-list.rds")}
+saveRDS(yll.data.male,
+        file=here("Data","substance-yll-m-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.male.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance-yll-m.rds") 
-}else{saveRDS(yll.data.male,file="Data/Processed/substance-yll-m.rds")}
+saveRDS(yll.data.male,
+        file=here("Data","substance-yll-m.rds"))
 ##  Female only
 ###################################################################################################
 for(i in 1:length(countries_mf)){
@@ -1139,11 +1104,11 @@ for(i in 1:length(countries_mf)){
 names(yll.data.female)<-countries_mf
 yll.data.female.all<-do.call(rbind,yll.data.female)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.female,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance-yll-f-list.rds")
-}else{saveRDS(yll.data.female,file="Data/Processed/substance-yll-f-list.rds")}
+saveRDS(yll.data.female,
+        file=here("Data","substance-yll-f-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.female.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-f.rds") 
-}else{saveRDS(yll.data.female,file="Data/Processed/substance-yll-f.rds")}
+saveRDS(yll.data.female,
+        file=here("Data","substance-yll-f.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL ABSOLUTE NUMBERS
@@ -1189,8 +1154,8 @@ YLL.measures$Date.death<-Date.death
 YLL.measures$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance_YLL_measures.rds") 
-}else{saveRDS(YLL.measures,file="Data/Processed/substance_YLL_measures.rds")}
+saveRDS(YLL.measures,
+        file=here("Data","substance_YLL_measures.rds"))
 
 ###################################################################################################
 ##
@@ -1228,8 +1193,8 @@ YLL.measures.rate.esp$Date.death<-Date.death
 YLL.measures.rate.esp$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance_YLL_measures_rate_esp.rds") 
-}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/substance_YLL_measures_rate_esp.rds")}
+YLL.measures.rate.esp,
+file=here("Data","substance_YLL_measures_rate_esp.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD
@@ -1267,8 +1232,8 @@ YLL.measures.rate.gbd$Date.death<-Date.death
 YLL.measures.rate.gbd$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance_YLL_measures_rate_gbd.rds") 
-}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/substance_YLL_measures_rate_gbd.rds")}
+saveRDS(YLL.measures.rate.gbd,
+        file=here("Data","substance_YLL_measures_rate_gbd.rds"))
 
 ###################################################################################################
 ##
@@ -1277,8 +1242,7 @@ if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - R
 ##
 ###################################################################################################
 
-if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance_YLL_measures.rds") 
-}else{dat<-readRDS(file="Data/Processed/substance_YLL_measures.rds")}
+dat<-readRDS(file=here("Data","substance_YLL_measures.rds"))
 
 sumpop<-tapply(pop$Total,pop$Country,sum)
 dat$Pop<-sumpop[which(names(sumpop)%in%dat$Country)]
@@ -1291,21 +1255,19 @@ names(yll_rates)<-c("Country","Date"
 
 
 # saving
-if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/substance_YLL_measures_rate_cpop.rds") 
-}else{saveRDS(yll_rates,file="Data/Processed/substance_YLL_measures_rate_cpop.rds")}
+saveRDS(yll_rates,
+        file=here("Data","substance_YLL_measures_rate_cpop.rds"))
 
 # Other Causes deaths: Drug (drug use disorders)
 ###################################################################################################
-if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/other_cause_drug.rds")
-}else{out<-readRDS("Data/Processed/other_cause_drug.rds")}
+out<-readRDS(here("Data","other_cause_drug.rds"))
 
 #choose YLL or Deaths
 out<-subset(out,Measure=="Deaths")
 ###################################################################################################
 
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
-if(!AL){nytexcess<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Excess deaths/NYTExcessDeaths.csv",sep=",")
-}else{nytexcess<-read.csv("Data/Excess deaths/NYTExcessDeaths.csv",sep=",")}
+nytexcess<-read.csv(here("Data","Excess deaths/NYTExcessDeaths.csv"),sep=",")
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
 nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
@@ -1313,28 +1275,21 @@ nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-if(!AL){sle.gbd<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_gbd_sle.2016.rds")
-}else{sle.gbd<-readRDS("Data/Processed/country_gbd_sle.2016.rds")}
+sle.gbd       <- readRDS("Data","country_gbd_sle.2016.rds")
 # Country specific life expectancies
-if(!AL){sle_both.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_both_sle_un.rds')
-}else{sle_both.un<-readRDS('Data/Processed/country_both_sle_un.rds')}
-if(!AL){sle_male.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_male_sle_un.rds')
-}else{sle_male.un<-readRDS('Data/Processed/country_male_sle_un.rds')}
-if(!AL){sle_female.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_female_sle_un.rds')
-}else{sle_female.un<-readRDS('Data/Processed/country_female_sle_un.rds')}
+sle_both.un   <- readRDS(here("Data","country_both_sle_un.rds"))
+sle_male.un   <- readRDS(here("Data","country_male_sle_un.rds"))
+sle_female.un <- readRDS(here("Data","country_female_sle_un.rds"))
 
 # Population
 ###################################################################################################
-#if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete.csv',row.names = 1)
-#}else{pop<-read.csv('Data/Processed/pop_complete.csv',row.names = 1)}
-if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete_2017.csv',row.names = 1)
-}else{pop<-read.csv('Data/Processed/pop_complete_2017.csv',row.names = 1)}
+pop<-read.csv(here("Data","pop_complete_2017.csv"),
+              row.names = 1)
 
 # List of countries
 ###################################################################################################
 # Country list file with full sample considered
-if(!AL){sample.countries<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/full sample list.csv",header=TRUE)
-}else{sample.countries<-read.csv("Data/full sample list.csv",header=TRUE)}
+sample.countries <- read.csv(here("Data","full sample list.csv"),header=TRUE)
 # Saving them as a list
 sample.countries.list<-as.character(data.frame(sample.countries)[,1])
 # List of countries with no data
@@ -1347,13 +1302,10 @@ countries<-intersect(countries,sort(unique(out$Country)))
 # Standard population weights
 ###################################################################################################
 #  European standard
-if(!AL){file.pop.std.gbd<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.gbd.RDS")
-}else{file.pop.std.gbd<-paste("Data/Processed/pop_std.gbd.RDS")}
-pop_std.gbd<-readRDS(file.pop.std.gbd)
+
+pop_std.gbd<-readRDS(here("Data","pop_std.gbd.RDS"))
 #  GBD standard
-if(!AL){file.pop.std.esp<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.esp.RDS")
-}else{file.pop.std.esp<-paste("Data/Processed/pop_std.esp.RDS")}
-pop_std.esp<-readRDS(file.pop.std.esp)
+pop_std.esp<-readRDS(here("Data","pop_std.esp.RDS"))
 
 ###################################################################################################
 ##
@@ -1433,12 +1385,12 @@ for(i in 1:length(countries)){
 }
 names(yll.data.both)<-countries
 yll.data.both.all<-do.call(rbind,yll.data.both)
-# ver with countries 
-if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug-yll-b-list.rds") 
-}else{saveRDS(yll.data.both,file="Data/Processed/drug-yll-b-list.rds")}
+# ver with countries
+saveRDS(yll.data.both,
+        file=here("Data","drug-yll-b-list.rds"))
 #this is the ver with all countries in one full dataframe
-if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug-yll-b.rds") 
-}else{saveRDS(yll.data.both.all,file="Data/Processed/drug-yll-b.rds")}
+saveRDS(yll.data.both.all,
+        file=here("Data","drug-yll-b.rds"))
 
 ##  Male only
 ###################################################################################################
@@ -1495,11 +1447,11 @@ for(i in 1:length(countries_mf)){
 names(yll.data.male)<-countries_mf
 yll.data.male.all<-do.call(rbind,yll.data.male)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.male,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug-yll-m-list.rds")
-}else{saveRDS(yll.data.male,file="Data/Processed/drug-yll-m-list.rds")}
+saveRDS(yll.data.male,
+        file=here("Data","drug-yll-m-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.male.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug-yll-m.rds") 
-}else{saveRDS(yll.data.male,file="Data/Processed/drug-yll-m.rds")}
+saveRDS(yll.data.male,
+        file=here("Data","drug-yll-m.rds"))
 ##  Female only
 ###################################################################################################
 for(i in 1:length(countries_mf)){
@@ -1554,11 +1506,11 @@ for(i in 1:length(countries_mf)){
 names(yll.data.female)<-countries_mf
 yll.data.female.all<-do.call(rbind,yll.data.female)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.female,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug-yll-f-list.rds")
-}else{saveRDS(yll.data.female,file="Data/Processed/drug-yll-f-list.rds")}
+saveRDS(yll.data.female,
+        file=here("Data","drug-yll-f-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.female.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-f.rds") 
-}else{saveRDS(yll.data.female,file="Data/Processed/drug-yll-f.rds")}
+saveRDS(yll.data.female,
+        file=here("Data","drug-yll-f.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL ABSOLUTE NUMBERS
@@ -1604,8 +1556,8 @@ YLL.measures$Date.death<-Date.death
 YLL.measures$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug_YLL_measures.rds") 
-}else{saveRDS(YLL.measures,file="Data/Processed/drug_YLL_measures.rds")}
+saveRDS(YLL.measures,
+        file=here("Data","drug_YLL_measures.rds"))
 
 ###################################################################################################
 ##
@@ -1643,8 +1595,8 @@ YLL.measures.rate.esp$Date.death<-Date.death
 YLL.measures.rate.esp$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug_YLL_measures_rate_esp.rds") 
-}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/drug_YLL_measures_rate_esp.rds")}
+saveRDS(YLL.measures.rate.esp,
+        file=here("Data","drug_YLL_measures_rate_esp.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD
@@ -1682,8 +1634,8 @@ YLL.measures.rate.gbd$Date.death<-Date.death
 YLL.measures.rate.gbd$Date.edeath<-Date.edeath
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug_YLL_measures_rate_gbd.rds") 
-}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/drug_YLL_measures_rate_gbd.rds")}
+saveRDS(YLL.measures.rate.gbd,
+        file=here("Data"/"drug_YLL_measures_rate_gbd.rds"))
 
 ###################################################################################################
 ##
@@ -1692,8 +1644,7 @@ if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - R
 ##
 ###################################################################################################
 
-if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug_YLL_measures.rds") 
-}else{dat<-readRDS(file="Data/Processed/drug_YLL_measures.rds")}
+dat<-readRDS(file=here("Data","drug_YLL_measures.rds"))
 
 sumpop<-tapply(pop$Total,pop$Country,sum)
 dat$Pop<-sumpop[which(names(sumpop)%in%dat$Country)]
@@ -1706,15 +1657,14 @@ names(yll_rates)<-c("Country","Date"
 
 
 # saving
-if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/drug_YLL_measures_rate_cpop.rds") 
-}else{saveRDS(yll_rates,file="Data/Processed/drug_YLL_measures_rate_cpop.rds")}
+saveRDS(yll_rates,
+        file=here("Data","drug_YLL_measures_rate_cpop.rds"))
 
 
 # Other Causes deaths: Flu 
 # (note below diff from above causes bc incorporates med/max values across years)
 ###################################################################################################
-if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/other_cause_flu.rds")
-}else{out<-readRDS("Data/Processed/other_cause_flu.rds")}
+out<-readRDS(here("Data","other_cause_flu.rds"))
 
 #choose YLL or Deaths
 out<-subset(out,Measure=="Deaths")
@@ -1722,8 +1672,7 @@ out<-subset(out,Measure=="Deaths")
 ###################################################################################################
 
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
-if(!AL){nytexcess<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Excess deaths/NYTExcessDeaths.csv",sep=",")
-}else{nytexcess<-read.csv("Data/Excess deaths/NYTExcessDeaths.csv",sep=",")}
+nytexcess<-read.csv(here("Data","NYTExcessDeaths.csv"),sep=",")
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
 nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
@@ -1731,32 +1680,22 @@ nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-if(!AL){sle.gbd<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_gbd_sle.2016.rds")
-}else{sle.gbd<-readRDS("Data/Processed/country_gbd_sle.2016.rds")}
+sle.gbd       <- readRDS("Data","country_gbd_sle.2016.rds")
 # Country specific life expectancies
-if(!AL){sle_both.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_both_sle_un.rds')
-}else{sle_both.un<-readRDS('Data/Processed/country_both_sle_un.rds')}
-if(!AL){sle_male.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_male_sle_un.rds')
-}else{sle_male.un<-readRDS('Data/Processed/country_male_sle_un.rds')}
-if(!AL){sle_female.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_female_sle_un.rds')
-}else{sle_female.un<-readRDS('Data/Processed/country_female_sle_un.rds')}
-
+sle_both.un   <- readRDS(here("Data","country_both_sle_un.rds"))
+sle_male.un   <- readRDS(here("Data","country_male_sle_un.rds"))
+sle_female.un <- readRDS(here("Data","country_female_sle_un.rds"))
 # Population
 ###################################################################################################
-#if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete.csv',row.names = 1)
-#}else{pop<-read.csv('Data/Processed/pop_complete.csv',row.names = 1)}
-if(!AL){pop_med<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete_flu_med.csv',row.names = 1)
-}else{pop_med<-read.csv('Data/Processed/pop_complete_flu_med.csv',row.names = 1)}
-if(!AL){pop_max<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete_flu_max.csv',row.names = 1)
-}else{pop_max<-read.csv('Data/Processed/pop_complete_flu_max.csv',row.names = 1)}
+pop_med<-read.csv(here("Data","pop_complete_flu_med.csv"),row.names = 1)
+pop_max<-read.csv(here("Data","pop_complete_flu_max.csv"),row.names = 1)
 #pop_complete_flu_med.csv
 #pop_complete_flu_max
 
 # List of countries
 ###################################################################################################
 # Country list file with full sample considered
-if(!AL){sample.countries<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/full sample list.csv",header=TRUE)
-}else{sample.countries<-read.csv("Data/full sample list.csv",header=TRUE)}
+sample.countries<-read.csv(here("Data","full sample list.csv"),header=TRUE)
 # Saving them as a list
 sample.countries.list<-as.character(data.frame(sample.countries)[,1])
 # List of countries with no data
@@ -1769,13 +1708,9 @@ countries<-intersect(countries,sort(unique(out$Country)))
 # Standard population weights
 ###################################################################################################
 #  European standard
-if(!AL){file.pop.std.gbd<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.gbd.RDS")
-}else{file.pop.std.gbd<-paste("Data/Processed/pop_std.gbd.RDS")}
-pop_std.gbd<-readRDS(file.pop.std.gbd)
+pop_std.gbd<-readRDS(here("Data","pop_std.gbd.RDS"))
 #  GBD standard
-if(!AL){file.pop.std.esp<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.esp.RDS")
-}else{file.pop.std.esp<-paste("Data/Processed/pop_std.esp.RDS")}
-pop_std.esp<-readRDS(file.pop.std.esp)
+pop_std.esp<-readRDS(here("Data","pop_std.esp.RDS"))
 
 ###################################################################################################
 ##
@@ -1867,11 +1802,9 @@ for(i in 1:length(countries)){
 names(yll.data.both)<-countries
 yll.data.both.all<-do.call(rbind,yll.data.both)
 # ver with countries 
-if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu-yll-b-list.rds") 
-}else{saveRDS(yll.data.both,file="Data/Processed/flu-yll-b-list.rds")}
+saveRDS(yll.data.both,file=here("Data","flu-yll-b-list.rds"))
 #this is the ver with all countries in one full dataframe
-if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu-yll-b.rds") 
-}else{saveRDS(yll.data.both.all,file="Data/Processed/flu-yll-b.rds")}
+saveRDS(yll.data.both.all,file=here("Data","flu-yll-b.rds"))
 
 ##  Male only
 ###################################################################################################
@@ -1935,11 +1868,11 @@ for(i in 1:length(countries_mf)){
 names(yll.data.male)<-countries_mf
 yll.data.male.all<-do.call(rbind,yll.data.male)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.male,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu-yll-m-list.rds")
-}else{saveRDS(yll.data.male,file="Data/Processed/flu-yll-m-list.rds")}
+saveRDS(yll.data.male,
+        file=here("Data","flu-yll-m-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.male.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu-yll-m.rds") 
-}else{saveRDS(yll.data.male,file="Data/Processed/flu-yll-m.rds")}
+saveRDS(yll.data.male,
+        file=here("Data","flu-yll-m.rds"))
 ##  Female only
 ###################################################################################################
 for(i in 1:length(countries_mf)){
@@ -1971,7 +1904,7 @@ for(i in 1:length(countries_mf)){
   tmp.population_med<-subset(pop_med,Country==countries[i])
   tmp.population_max<-subset(pop_max,Country==countries[i])
   # population count
-  c$Population_med<-tmp.population_med$Female
+  c$Population_med<-tmp./population_med$Female
   c$Population_max<-tmp.population_max$Female
   # computing rates for each measure
   c$YLL.rate.gbd.f_med<-(c$YLL.gbd.f_med/tmp.population_med$Female)*100000 
@@ -2003,12 +1936,12 @@ for(i in 1:length(countries_mf)){
 names(yll.data.female)<-countries_mf
 yll.data.female.all<-do.call(rbind,yll.data.female)
 #ver with countries_mf 
-if(!AL){saveRDS(yll.data.female,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu-yll-f-list.rds")
-}else{saveRDS(yll.data.female,file="Data/Processed/flu-yll-f-list.rds")}
+saveRDS(yll.data.female,
+        file=here("Data","flu-yll-f-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-if(!AL){saveRDS(yll.data.female.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-f.rds") 
-}else{saveRDS(yll.data.female,file="Data/Processed/flu-yll-f.rds")}
-#save.image("~/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared/Code/a_tmp.RData")
+saveRDS(yll.data.female,
+        file=here("Data","flu-yll-f.rds"))
+
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL ABSOLUTE NUMBERS
@@ -2055,8 +1988,8 @@ for (i in 1:length(countries)){
 }
 
 # saving
-if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu_YLL_measures.rds") 
-}else{saveRDS(YLL.measures,file="Data/Processed/flu_YLL_measures.rds")}
+saveRDS(YLL.measures,
+         file=here("Data","flu_YLL_measures.rds"))
 
 ###################################################################################################
 ##
@@ -2095,8 +2028,8 @@ for (i in 1:length(countries)){
 }
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu_YLL_measures_rate_esp.rds") 
-}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/flu_YLL_measures_rate_esp.rds")}
+saveRDS(YLL.measures.rate.esp,
+        file=here("Data","flu_YLL_measures_rate_esp.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD
@@ -2135,8 +2068,8 @@ for (i in 1:length(countries)){
 }
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu_YLL_measures_rate_gbd.rds") 
-}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/flu_YLL_measures_rate_gbd.rds")}
+saveRDS(YLL.measures.rate.gbd,
+        file=here("Data","flu_YLL_measures_rate_gbd.rds"))
 
 
 ###################################################################################################
@@ -2146,8 +2079,7 @@ if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - R
 ##
 ###################################################################################################
 
-if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu_YLL_measures.rds") 
-}else{dat<-readRDS(file="Data/Processed/flu_YLL_measures.rds")}
+dat<-readRDS(file=here("Data","flu_YLL_measures.rds"))
 
 sumpop<-tapply(pop_med$Total,pop_med$Country,sum)
 dat$Population_med<-sumpop[which(names(sumpop)%in%dat$Country)]
@@ -2163,6 +2095,6 @@ names(yll_rates)<-c("Country"
 
 
 # saving
-if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/flu_YLL_measures_rate_cpop.rds") 
-}else{saveRDS(yll_rates,file="Data/Processed/flu_YLL_measures_rate_cpop.rds")}
+saveRDS(yll_rates,
+        file=here("Data","flu_YLL_measures_rate_cpop.rds"))
 
