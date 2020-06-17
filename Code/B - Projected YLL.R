@@ -13,7 +13,6 @@
 
 
 # Notes:
-# Mind the user defined paths until I can get the package here to work.
 # Data cleaning should be done in the data preparation files for the last version.
 # This includes issues with covid-19 death count dataset.
 
@@ -29,6 +28,7 @@ library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(wpp2019)
+library(here)
 
 ###################################################################################################
 ##
@@ -36,11 +36,6 @@ library(wpp2019)
 ##  
 ##
 ###################################################################################################
-
-AL<-FALSE
-# User defined directory
-if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared')
-}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared")}
 
 ###################################################################################################
 ##
@@ -50,50 +45,39 @@ if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID
 ###################################################################################################
 # COVID-19 deaths
 ###################################################################################################
-if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/deathcounts_clean12-6-2020.rds")
-}else{out<-readRDS("Data/Processed/deathcounts_clean12-6-2020.rds")}
+out <- readRDS(here("Data","deathcounts_clean12-6-2020.rds"))
 
 # COVID-19 projected deaths
 ###################################################################################################
 
-if(!AL){projected<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/projections_covid_deaths.rds")
-}else{projected<-readRDS("Data/Processed/projections_covid_deaths.rds")}
+projected <- readRDS(here("Data","projections_covid_deaths.rds"))
 
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-if(!AL){sle.gbd<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_gbd_sle.2016.rds")
-}else{sle.gbd<-readRDS("Data/Processed/country_gbd_sle.2016.rds")}
+sle.gbd       <- readRDS(here("Data","country_gbd_sle.2016.rds"))
 # Country specific life expectancies
-if(!AL){sle_both.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_both_sle_un.rds')
-}else{sle_both.un<-readRDS('Data/Processed/country_both_sle_un.rds')}
-if(!AL){sle_male.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_male_sle_un.rds')
-}else{sle_male.un<-readRDS('Data/Processed/country_male_sle_un.rds')}
-if(!AL){sle_female.un<-readRDS('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/country_female_sle_un.rds')
-}else{sle_female.un<-readRDS('Data/Processed/country_female_sle_un.rds')}
+sle_both.un   <- readRDS(here('Data','country_both_sle_un.rds'))
+sle_male.un   <- readRDS(here('Data','country_male_sle_un.rds'))
+sle_female.un <- readRDS(here('Data','country_female_sle_un.rds'))
 
 # Population
 ###################################################################################################
-if(!AL){pop<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_complete.csv',row.names = 1)
-}else{pop<-read.csv('Data/Processed/pop_complete.csv',row.names = 1)}
+pop<-read.csv(here('Data','pop_complete.csv'),row.names = 1)
 
 # List of countries
 ###################################################################################################
 # Country list file with full sample considered
-our_sample<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/full sample list.csv')
-our_sample<-as.character(data.frame(our_sample)[,1])
-countries<-our_sample
+our_sample <- read.csv(here('Data','full sample list.csv'))
+our_sample <- as.character(data.frame(our_sample)[,1])
+countries  <- our_sample
 
 # Standard population weights
 ###################################################################################################
 #  European standard
-if(!AL){file.pop.std.gbd<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.gbd.RDS")
-}else{file.pop.std.gbd<-paste("Data/Processed/pop_std.gbd.RDS")}
-pop_std.gbd<-readRDS(file.pop.std.gbd)
+pop_std.gbd      <- readRDS(here("Data","pop_std.gbd.RDS"))
 #  GBD standard
-if(!AL){file.pop.std.esp<-paste("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/pop_std.esp.RDS")
-}else{file.pop.std.esp<-paste("Data/Processed/pop_std.esp.RDS")}
-pop_std.esp<-readRDS(file.pop.std.esp)
+pop_std.esp      <- readRDS(here("Data","pop_std.esp.RDS"))
 
 ###################################################################################################
 ##
@@ -107,7 +91,7 @@ pop_std.esp<-readRDS(file.pop.std.esp)
 # Data holders
 yll.data.both<-vector("list",length=length(countries))
 
-i<-30
+#i<-30
 
 ##  Both sexes
 ###################################################################################################
@@ -158,11 +142,11 @@ for(i in 1:length(countries)){
 names(yll.data.both)<-countries
 yll.data.both.all<-do.call(rbind,yll.data.both)
 # ver with countries 
-if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-projected-list.rds") 
-}else{saveRDS(yll.data.both,file="Data/Processed/yll-projected-list.rds") }
+saveRDS(yll.data.both,
+        file=here("Data","yll-projected-list.rds") )
 #this is the ver with all countries in one full dataframe
-if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-projected.rds") 
-}else{saveRDS(yll.data.both.all,file="Data/Processed/yll-projected.rds") }
+saveRDS(yll.data.both.all,
+        file=here("Data","yll-projected.rds") )
 
 
 ###################################################################################################
@@ -203,8 +187,8 @@ for (i in 1:length(countries)){
 YLL.measures$Date<-as.Date(Date)
 
 # saving
-if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_projected_measures.rds") 
-}else{saveRDS(YLL.measures,file="Data/Processed/YLL_projected_measures.rds")}
+saveRDS(YLL.measures,
+        file=here("Data","YLL_projected_measures.rds"))
 
 ###################################################################################################
 ##
@@ -236,8 +220,8 @@ for (i in 1:length(countries)){
 YLL.measures.rate.esp$Date<-Date
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_projected_measures_rate_esp.rds") 
-}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/YLL_projected_measures_rate_esp.rds")}
+saveRDS(YLL.measures.rate.esp,
+        file=here("Data","YLL_projected_measures_rate_esp.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD
@@ -268,8 +252,8 @@ for (i in 1:length(countries)){
 YLL.measures.rate.gbd$Date<-Date
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_projected_measures_rate_gbd.rds") 
-}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/YLL_projected_measures_rate_gbd.rds")}
+saveRDS(YLL.measures.rate.gbd,
+        file=here("Data","YLL_projected_measures_rate_gbd.rds"))
 
 ###################################################################################################
 ##
@@ -278,8 +262,7 @@ if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - R
 ##
 ###################################################################################################
 
-if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_projected_measures.rds") 
-}else{dat<-readRDS(file="Data/Processed/YLL_projected_measures.rds")}
+dat<-readRDS(file=here("Data","YLL_projected_measures.rds"))
 
 sumpop<-tapply(pop$Total,pop$Country,sum)
 dat$Pop<-sumpop[which(names(sumpop)%in%dat$Country)]
@@ -290,9 +273,9 @@ yll_rates<-as.data.frame(cbind(dat$Country,dat$Date,rates,dat$Pop))
 
 
 # saving
-if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_projected_measures_rate_gbd_cpop.rds") 
-}else{saveRDS(yll_rates,file="Data/Processed/YLL_projected_measures_rate_gbd_cpop.rds")}
+saveRDS(yll_rates,
+        file=here("Data","YLL_projected_measures_rate_gbd_cpop.rds"))
 
 # Keeping also the projected deaths
-if(!AL){saveRDS(projected$proj.deaths.min,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/projected_deaths_min_figures.rds") 
-}else{saveRDS(projected$proj.deaths.min,file="Data/Processed/projected_deaths_min_figures.rds")}
+saveRDS(projected$proj.deaths.min,
+        file=here("Data","projected_deaths_min_figures.rds"))
