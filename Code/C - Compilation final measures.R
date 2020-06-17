@@ -17,28 +17,6 @@
 
 ###################################################################################################
 ##
-##  LIBRARIES
-##  
-##
-###################################################################################################
-
-library(ggplot2)
-library(dplyr)
-#library(hrbrthemes)
-#library(viridis)
-library(wpp2019)
-library(stargazer)
-library(here)
-
-###################################################################################################
-##
-##  DIRECTORY
-##  
-##
-###################################################################################################
-
-###################################################################################################
-##
 ##  DATA
 ##  
 ##
@@ -52,8 +30,7 @@ our_sample<-read.csv(here("Data","full sample list.csv"))
 our_sample<-as.character(data.frame(our_sample)[,1])
 # Sample with male / female data
 
-gender_sample<-read.csv(here("Data","gender_sample.csv"))
-gender_sample<-as.character(data.frame(gender_sample)[,1])
+gender_sample<-readRDS(here("Data","gender_sample.rds"))
 # Excess sample
 excess_sample<-readRDS(here("Data","sample.excess.rds"))
 
@@ -68,11 +45,27 @@ pop<-read.csv(here("Data","pop_complete.csv"),row.names = 1)
 # YLLs COVID-19
 ###################################################################################################
 YLL.measures_covid19<-readRDS(here("Data","YLL.measures.rds"))
-YLL.measures_covid19_gendered<-YLL.measures_covid19[which(is.element(YLL.measures_covid19$Country,gender_sample)==TRUE&
+YLL.measures_covid19_gendered<-YLL.measures_covid19[which(is.element(YLL.measures_covid19$Country,gender_sample)&
                                                             YLL.measures_covid19$YLL.gbd.m!=0&
                                                             YLL.measures_covid19$YLL.un.f!=0&
                                                             YLL.measures_covid19$Country!='Estonia'),]
-YLL.measures.rate.esp_covid19<-readRDS(here("Data","YLL.measures.rate.esp.rds"))
+YLL.measures.rate.esp_covid19<###################################################################################################
+###################################################################################################
+##
+##  COVID-19 YLL
+##  Final result compilation
+##
+###################################################################################################
+###################################################################################################
+
+
+# Description:
+# Gathers final results for comparisons.
+
+
+# Notes:
+# Mind the user defined paths.
+-readRDS(here("Data","YLL.measures.rate.esp.rds"))
 YLL.measures.rate.gbd_covid19<-readRDS(here("Data","YLL.measures.rate.gbd.rds"))
 YLL.measures.rate.cpop_covid19<-readRDS(here("Data","YLL.measures_rate_cpop.rds"))
 
@@ -106,25 +99,25 @@ projected_deaths_min_figures<-readRDS(here("Data","projected_deaths_min_figures.
 # YLLs other causes - transport / heart / substance -- includes alcohol (substance_) / drugs / flu
 ###################################################################################################
 # Transport
-YLL.measures_transport<-readRDS(here("Data","transport_YLL_measures.rds"))
-YLL.measures.rate.esp_transport<-readRDS(here("Data","transport_YLL_measures_rate_esp.rds"))
-YLL.measures.rate.gbd_transport<-readRDS(here("Data","transport_YLL_measures_rate_gbd.rds"))
+YLL.measures_transport          <-readRDS(here("Data","transport_YLL_measures.rds"))
+YLL.measures.rate.esp_transport <-readRDS(here("Data","transport_YLL_measures_rate_esp.rds"))
+YLL.measures.rate.gbd_transport <-readRDS(here("Data","transport_YLL_measures_rate_gbd.rds"))
 YLL.measures.rate.cpop_transport<-readRDS(here("Data","transport_YLL_measures_rate_cpop.rds"))
 # heart
-YLL.measures_heart<-readRDS("Data/heart_YLL_measures.rds"))
-YLL.measures.rate.esp_heart<-readRDS(here("Data","heart_YLL_measures_rate_esp.rds"))
-YLL.measures.rate.gbd_heart<-readRDS(here("Data","heart_YLL_measures_rate_gbd.rds"))
-YLL.measures.rate.cpop_heart<-readRDS(here("Data","heart_YLL_measures_rate_cpop.rds"))
+YLL.measures_heart              <-readRDS(here("Data","heart_YLL_measures.rds"))
+YLL.measures.rate.esp_heart     <-readRDS(here("Data","heart_YLL_measures_rate_esp.rds"))
+YLL.measures.rate.gbd_heart     <-readRDS(here("Data","heart_YLL_measures_rate_gbd.rds"))
+YLL.measures.rate.cpop_heart    <-readRDS(here("Data","heart_YLL_measures_rate_cpop.rds"))
 # drug
-YLL.measures_drug<-readRDS(here("Data","drug_YLL_measures.rds"))
-YLL.measures.rate.esp_drug<-readRDS(here("Data","drug_YLL_measures_rate_esp.rds"))
-YLL.measures.rate.gbd_drug<-readRDS(here("Data","drug_YLL_measures_rate_gbd.rds"))
-YLL.measures.rate.cpop_drug<-readRDS(here("Data","drug_YLL_measures_rate_cpop.rds"))
+YLL.measures_drug               <-readRDS(here("Data","drug_YLL_measures.rds"))
+YLL.measures.rate.esp_drug      <-readRDS(here("Data","drug_YLL_measures_rate_esp.rds"))
+YLL.measures.rate.gbd_drug      <-readRDS(here("Data","drug_YLL_measures_rate_gbd.rds"))
+YLL.measures.rate.cpop_drug     <-readRDS(here("Data","drug_YLL_measures_rate_cpop.rds"))
 # flu
-YLL.measures_flu<-readRDS(here("Data","flu_YLL_measures.rds"))
-YLL.measures.rate.esp_flu<-readRDShere("Data","flu_YLL_measures_rate_esp.rds"))
-YLL.measures.rate.gbd_flu<-readRDS(here("Data","flu_YLL_measures_rate_gbd.rds"))
-YLL.measures.rate.cpop_flu<-readRDS(here("Data","flu_YLL_measures_rate_cpop.rds"))
+YLL.measures_flu                <-readRDS(here("Data","flu_YLL_measures.rds"))
+YLL.measures.rate.esp_flu       <-readRDS(here("Data","flu_YLL_measures_rate_esp.rds"))
+YLL.measures.rate.gbd_flu       <-readRDS(here("Data","flu_YLL_measures_rate_gbd.rds"))
+YLL.measures.rate.cpop_flu      <-readRDS(here("Data","flu_YLL_measures_rate_cpop.rds"))
 
 
 ###################################################################################################
@@ -236,11 +229,11 @@ total.deaths.country.all$total_deaths<-total.deaths.country.all$Male_deaths+tota
 #divide YLL (YLL.un.m,YLL.un.f) from measures by total.deaths.country.all
 res <-subset(YLL.measures_covid19,Country%in%gender_sample)#subset by countries in gender_sample
 #check countries match otherwise throw error
-if(!all(res$Country==total.deaths.country.all$Country[which(is.element(as.character(res$Country),as.character(gender_sample))==TRUE)]))
+if(!all(res$Country==total.deaths.country.all$Country[which(is.element(as.character(res$Country),as.character(gender_sample)))]))
   {print("STOP! Countries don't match perfectly.")}
-YLLperDeath_bysex<-data.frame(Country=res$Country
-                              ,YLLperDeath_m=res$YLL.un.m/total.deaths.country.all$Male_deaths
-                              ,YLLperDeath_f=res$YLL.un.f/total.deaths.country.all$Female_deaths)
+YLLperDeath_bysex<-data.frame(Country=res$Country,
+                              YLLperDeath_m=res$YLL.un.m/total.deaths.country.all$Male_deaths,
+                              YLLperDeath_f=res$YLL.un.f/total.deaths.country.all$Female_deaths)
 
 ## YLL by age -- both genders
 ###################################################################################################
@@ -792,7 +785,7 @@ saveRDS(initial_guess,
 
 ## Compensating death chages
 saveRDS(results.YLL.b.cutt_off.global,
-        file==here("Data","yll_global_cut_off.rds"))
+        file=here("Data","yll_global_cut_off.rds"))
 
 ## Age distribution of deaths per country
 ## YLL lost per age, gendered, YLL commulative gendered
@@ -876,5 +869,5 @@ table_deaths_dates_p2<-data.frame(
 table_deaths_dates<-merge(table_deaths_dates_p1,table_deaths_dates_p2,by=c('Country'),all.x=TRUE)
 
 saveRDS(table_deaths_dates,
-        file==here("Data","table_deaths_dates.rds"))
+        file=here("Data","table_deaths_dates.rds"))
 

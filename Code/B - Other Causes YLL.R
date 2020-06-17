@@ -16,29 +16,6 @@
 
 ###################################################################################################
 ##
-##  LIBRARIES
-##  
-##
-###################################################################################################
-
-library(ggplot2)
-library(dplyr)
-library(hrbrthemes)
-library(viridis)
-library(wpp2019)
-library(here)
-
-###################################################################################################
-##
-##  DIRECTORY
-##  
-##
-###################################################################################################
-
-
-
-###################################################################################################
-##
 ##  DATA
 ##  
 ##
@@ -581,10 +558,10 @@ names(yll.data.both)<-countries
 yll.data.both.all<-do.call(rbind,yll.data.both)
 # ver with countries 
 saveRDS(yll.data.both,
-        file=here("Data""heart-yll-b-list.rds"))
+        file=here("Data","heart-yll-b-list.rds"))
 #this is the ver with all countries in one full dataframe
 saveRDS(yll.data.both.all,
-        file=here("Data""heart-yll-b.rds"))
+        file=here("Data","heart-yll-b.rds"))
 
 ##  Male only
 ###################################################################################################
@@ -646,7 +623,21 @@ saveRDS(yll.data.male,
 #this is the ver with all countries_mf in one full dataframe
 saveRDS(yll.data.male,
         file = here("Data","heart-yll-m.rds"))
-##  Female only
+##  Female only###################################################################################################
+###################################################################################################
+##
+##  Other Causes YLL
+##  Years of life lost
+##
+###################################################################################################
+###################################################################################################
+
+# Description:
+# Calculates years of life lost (YLL) and related measures 
+
+# Notes:
+# Mind the user defined paths.
+
 ###################################################################################################
 for(i in 1:length(countries_mf)){
   cat("Country=",countries_mf[i],"\n")
@@ -1193,8 +1184,8 @@ YLL.measures.rate.esp$Date.death<-Date.death
 YLL.measures.rate.esp$Date.edeath<-Date.edeath
 
 # saving
-YLL.measures.rate.esp,
-file=here("Data","substance_YLL_measures_rate_esp.rds"))
+saveRDS(YLL.measures.rate.esp,
+        file=here("Data","substance_YLL_measures_rate_esp.rds"))
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD

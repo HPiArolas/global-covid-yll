@@ -1,16 +1,7 @@
-library(tidyverse)
-library(readr)
-library(ggplot2)
-library(countrycode)
-library(paletteer) 
-library(grid)
-AL<-FALSE
-# User defined directory
-if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Final results')
-}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared/Data/Final results")}
 
-if(!AL){ tmp_file<-"/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Final results/table_covid_other.csv"
-}else{tmp_file<-"table_covid_other.csv"}
+
+
+tmp_file<-here("Data","table_covid_other.csv")
 Other   <- read_csv(paste(tmp_file)) %>% 
   select(-Date,-X1) %>% 
   pivot_longer(2:9, 
@@ -28,7 +19,7 @@ Other   <- read_csv(paste(tmp_file)) %>%
 continent_colors = paletteer_d("yarrr::basel") %>% as.character() %>% '['(1:5)
 names(continent_colors) <- unique(Other$Continent)
 ## Subset to countries
-sample_affected<-readRDS(file="../Data/Final results/sample_affected.rds")
+sample_affected<-readRDS(here("Data","Final results/sample_affected.rds"))
 Other<-subset(Other,Country%in%sample_affected$Country)
 Base <- 
   Other %>% 
@@ -75,7 +66,7 @@ Base3$Country<-factor(as.character(Base3$Country),levels=as.character(Base3$Coun
     theme_light() +
     ylab("")+ xlab("B. Transport") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
-          , axis.text.y=element_text(colour= "gray20")#Base3$Continent_col)
+          , axis.text.y=element_text(colour= "gray20")
     )
   # Flu
   p2<-ggplot(Base3, aes(x=`Flu (med)`, y=Country)) +
@@ -88,7 +79,7 @@ Base3$Country<-factor(as.character(Base3$Country),levels=as.character(Base3$Coun
     theme_light() +
     ylab("")+ xlab("A. Flu") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
-          , axis.text.y=element_text(colour="gray20")#Base3$Continent_col)
+          , axis.text.y=element_text(colour="gray20")
     )
   # Heart
   p3<-ggplot(Base3, aes(x=Heart, y=Country)) +
@@ -96,7 +87,7 @@ Base3$Country<-factor(as.character(Base3$Country),levels=as.character(Base3$Coun
     theme_light() +
     ylab("")+ xlab("C. Heart") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
-          , axis.text.y=element_text(colour="gray20")#Base3$Continent_col)
+          , axis.text.y=element_text(colour="gray20")
     )
   # Excess
   p4<-ggplot(Base3, aes(x=Excess, y=Country)) +
@@ -104,7 +95,7 @@ Base3$Country<-factor(as.character(Base3$Country),levels=as.character(Base3$Coun
     theme_light() +
     ylab("")+ xlab("D. Excess Mortality") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
-          , axis.text.y=element_text(colour="gray20")#Base3$Continent_col)
+          , axis.text.y=element_text(colour="gray20")
     )
   grid.arrange(p2,p1,p3,p4, ncol=4)
 }
