@@ -36,7 +36,7 @@ nytexcess <- read.csv(here("Data", "NYTExcessDeaths.csv",
 
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
-nytexcessv<-vnytexcess[which(nytexcess$Country%in%matched),]
+nytexcessv<-nytexcess[which(nytexcess$Country%in%matched),]
 
 # SLE
 ###################################################################################################
@@ -214,7 +214,7 @@ for(i in 1:length(countries_mf)){
                                  
   )
 }
-names(yll.data.male) < -countries_mf
+names(yll.data.male) <- countries_mf
 yll.data.male.all    <- do.call(rbind,yll.data.male)
 #ver with countries_mf 
 saveRDS(yll.data.male,
