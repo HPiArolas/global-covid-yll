@@ -9,7 +9,12 @@
 
 # Description:
 # Calculates EXCESS deaths from weekly mortality baselines in all countries by sex and age 
-rm(list=ls())
+# rm(list=ls())
+
+if (!dir.exists(here("Data","single_est"))){
+  dir.create(here("Data","single_est"))
+}
+
 
 ###################################################################################
 # reading data of weekly mortality in 5-years age groups and exposures from the HMD
@@ -195,7 +200,9 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
            exc_reg_pi = ifelse(Deaths > up, 1, 0)) %>% 
     dplyr::select(Country, date, everything())
   
-  write_csv(db4, file = here("Data/single_est/", paste0(ct, "_", sx, "_", ag, "_weekly_mortality_tibble.csv")))
+  write_csv(db4, path = here("Data",
+                             "single_est", 
+                             paste0(ct, "_", sx, "_", ag, "_weekly_mortality_tibble.csv")))
   return(db4)
 }
 
@@ -221,7 +228,7 @@ for (c in cts) {
 
 db_all <- NULL
 
-temp = list.files(here("Data/single_est/", pattern="*.csv")) 
+temp = list.files(here("Data","single_est"), pattern="*.csv")
 
 # i <- 1
 length(temp)
@@ -235,7 +242,7 @@ for (i in 1:length(temp)) {
 
 detach(package:MASS)
 
-write_csv(db_all, file = here("Data", "baseline_excess_pclm_5.csv"))
+write_csv(db_all, path = here("Data", "baseline_excess_pclm_5.csv"))
 
 ###################################################################################################
 ###################################################################################################
@@ -460,7 +467,7 @@ for (c in cts) {
 
 db_all <- NULL
 
-temp = list.files(here("Data/single_est/", pattern="*.csv")) 
+temp = list.files(here("Data","single_est"), pattern="*.csv")
 
 # i <- 1
 length(temp)
