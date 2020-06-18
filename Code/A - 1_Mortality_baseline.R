@@ -193,7 +193,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
            excess = Deaths - pred,
            m_excess = excess / exposure,
            exc_reg_pi = ifelse(Deaths > up, 1, 0)) %>% 
-    select(Country, date, everything())
+    dplyr::select(Country, date, everything())
   
   write_csv(db4, file = here("Data/single_est/", paste0(ct, "_", sx, "_", ag, "_weekly_mortality_tibble.csv")))
   return(db4)

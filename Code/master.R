@@ -25,8 +25,11 @@ library(stats)
 library(splines)
 library(MASS)
 library(gnm)
+select <- dplyr::select
+here   <- here::here()
 
 # 1) 
+
 source(here("Code","A - 1_Mortality_baseline.R"))
 detach(package:MASS)
 

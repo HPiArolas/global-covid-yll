@@ -49,7 +49,7 @@ YLL.measures_covid19_gendered<-YLL.measures_covid19[which(is.element(YLL.measure
                                                             YLL.measures_covid19$YLL.gbd.m!=0&
                                                             YLL.measures_covid19$YLL.un.f!=0&
                                                             YLL.measures_covid19$Country!='Estonia'),]
-YLL.measures.rate.esp_covid19<###################################################################################################
+###################################################################################################
 ###################################################################################################
 ##
 ##  COVID-19 YLL
@@ -63,36 +63,34 @@ YLL.measures.rate.esp_covid19<##################################################
 # Gathers final results for comparisons.
 
 
-# Notes:
-# Mind the user defined paths.
--readRDS(here("Data","YLL.measures.rate.esp.rds"))
-YLL.measures.rate.gbd_covid19<-readRDS(here("Data","YLL.measures.rate.gbd.rds"))
+YLL.measures.rate.esp_covid19 <-readRDS(here("Data","YLL.measures.rate.esp.rds"))
+YLL.measures.rate.gbd_covid19 <-readRDS(here("Data","YLL.measures.rate.gbd.rds"))
 YLL.measures.rate.cpop_covid19<-readRDS(here("Data","YLL.measures_rate_cpop.rds"))
 
-YLL.b.age<-readRDS(here("Data","yll-b-list.rds"))
-YLL.b.age.all<-readRDS(here("Data","yll-b.rds"))
-YLL.m.age<-readRDS(here("Data","yll-m-list.rds"))
-YLL.m.age.all<-readRDS(here("Data","yll-m.rds"))
-YLL.f.age<-readRDS(here("Data","yll-f-list.rds"))
-YLL.f.age.all<-readRDS(here("Data","yll-f.rds"))
+YLL.b.age                     <-readRDS(here("Data","yll-b-list.rds"))
+YLL.b.age.all                 <-readRDS(here("Data","yll-b.rds"))
+YLL.m.age                     <-readRDS(here("Data","yll-m-list.rds"))
+YLL.m.age.all                 <-readRDS(here("Data","yll-m.rds"))
+YLL.f.age                     <-readRDS(here("Data","yll-f-list.rds"))
+YLL.f.age.all                 <-readRDS(here("Data","yll-f.rds"))
 
 # YLLs COVID-19 - excess
 ###################################################################################################
-YLL_excess_measures<-readRDS(here("Data","YLL_excess_measures.rds"))
-YLL_excess_measures_rate_esp<-readRDS(here("Data","YLL_excess_measures_rate_esp.rds"))
-YLL_excess_measures_rate_gbd<-readRDS(here("Data","YLL_excess_measures_rate_gbd.rds"))
-YLL_excess_measures_rate_gbd_cpop<-readRDS(here("Data","YLL_excess_measures_rate_gbd_cpop.rds"))
-YLL_excess_list<-readRDS(here("Data","yll-excess-list.rds"))
-excess_dates_table<-readRDS(here("Data","excess_dates_table.RDS")) 
+YLL_excess_measures                 <-readRDS(here("Data","YLL_excess_measures.rds"))
+YLL_excess_measures_rate_esp        <-readRDS(here("Data","YLL_excess_measures_rate_esp.rds"))
+YLL_excess_measures_rate_gbd        <-readRDS(here("Data","YLL_excess_measures_rate_gbd.rds"))
+YLL_excess_measures_rate_gbd_cpop   <-readRDS(here("Data","YLL_excess_measures_rate_gbd_cpop.rds"))
+YLL_excess_list                     <-readRDS(here("Data","yll-excess-list.rds"))
+excess_dates_table                  <-readRDS(here("Data","excess_dates_table.RDS")) 
 
 
 # YLLs COVID-19 - projected
 ###################################################################################################
-YLL_projected_measures<-readRDS(here("Data","YLL_projected_measures.rds"))
-YLL_projected_measures_rate_esp<-readRDS(here("Data","YLL_projected_measures_rate_esp.rds"))
-YLL_projected_measures_rate_gbd<-readRDS(here("Data","YLL_projected_measures_rate_gbd.rds"))
+YLL_projected_measures              <-readRDS(here("Data","YLL_projected_measures.rds"))
+YLL_projected_measures_rate_esp     <-readRDS(here("Data","YLL_projected_measures_rate_esp.rds"))
+YLL_projected_measures_rate_gbd     <-readRDS(here("Data","YLL_projected_measures_rate_gbd.rds"))
 YLL_projected_measures_rate_gbd_cpop<-readRDS(here("Data","YLL_projected_measures_rate_gbd_cpop.rds"))
-projected_deaths_min_figures<-readRDS(here("Data","projected_deaths_min_figures.rds"))
+projected_deaths_min_figures        <-readRDS(here("Data","projected_deaths_min_figures.rds"))
 
 
 
