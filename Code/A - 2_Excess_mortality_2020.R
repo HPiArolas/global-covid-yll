@@ -11,11 +11,6 @@
 # Summarize EXCESS deaths since 24th February, 2020, in all countries by sex and age 
 
 rm(list=ls())
-pkgs <- c("tidyverse",
-          "lubridate",
-          "haven")
-
-lapply(pkgs, require, character.only = T)
 
 db_all <- read_csv(here("Data", "baseline_excess_pclm_5.csv"))
 
