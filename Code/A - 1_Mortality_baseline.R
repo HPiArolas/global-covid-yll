@@ -248,9 +248,8 @@ write_csv(db_all, file = here("Data", "baseline_excess_pclm_5.csv"))
 ###################################################################################################
 
 # Description:
-# Calculates EXCESS deaths from weekly mortality baselines in all countries by sex and age 
-rm(list=ls())
-select <- dplyr::select
+# Calculates EXCESS deaths from weekly mortality baselines in all countries by sex and age
+
 
 ###################################################################################
 # reading data of weekly mortality in 5-years age groups and exposures from the HMD
@@ -434,7 +433,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
            excess = Deaths - pred,
            m_excess = excess / exposure,
            exc_reg_pi = ifelse(Deaths > up, 1, 0)) %>% 
-    select(Country, date, everything())
+    dplyr::select(Country, date, everything())
   
   write_csv(db4, file = here("Data/single_est/", paste0(ct, "_", sx, "_", ag, "_weekly_mortality_tibble.csv")))
   return(db4)
