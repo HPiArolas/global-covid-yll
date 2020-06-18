@@ -33,7 +33,7 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 
 # Main data file descriptions
 - `stmf_5.rds`: Short term mortality fluctuations in 5-years age groups
-- `OffsetsHMD.rds`: Exposures for mortality baseline baseline estimation
+- `OffsetsHMD.rds`: Exposures for mortality baseline estimation
 - `total_deaths_country_b.rds`: Total number of deaths, both genders combined
 - `deaths_age_country_b.rds`: Age distribution of deaths per country -- both
 - `YLL_covid19_age_cummulative.rds`: Age distribution of deaths per country and YLLs per age
