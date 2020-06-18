@@ -9,20 +9,7 @@
 
 # Description:
 # Calculates EXCESS deaths from weekly mortality baselines in all countries by sex and age 
-
 rm(list=ls())
-pkgs <- c("tidyverse",
-          "lubridate",
-          "haven",
-          "readxl", 
-          "stats", 
-          "splines",
-          "MASS",
-          "gnm",
-          'doParallel', 
-          'foreach')
-
-lapply(pkgs, require, character.only = T)
 
 ###################################################################################
 # reading data of weekly mortality in 5-years age groups and exposures from the HMD
