@@ -10,6 +10,7 @@
 # Description:
 # Calculates EXCESS deaths from weekly mortality baselines in all countries by sex and age 
 rm(list=ls())
+select <- dplyr::select
 
 ###################################################################################
 # reading data of weekly mortality in 5-years age groups and exposures from the HMD
