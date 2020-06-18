@@ -22,6 +22,8 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 
 
 # Code file descriptions
+- `A - 1_Mortality_baseline.R`: mortality baseline etimation from weekly mortality.
+- `A - 2_Excess_mortality_2020`: calculations of 2020 excess mortality.
 - `B - Excess YLL.R`: calculations of YLL for excess mortality.
 - `B - Other Causes YLL.R`: calculations of YLL for other causes of mortality.
 - `B - Projected YLL.R`: calculations of YLL for projected scenarios.
@@ -30,6 +32,8 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `C - Figures.R`: creates plots, some used in manuscript.
 
 # Main data file descriptions
+- `stmf_5.rds`: Short term mortality fluctuations in 5-years age groups
+- `OffsetsHMD.rds`: Exposures for mortality baseline baseline estimation
 - `total_deaths_country_b.rds`: Total number of deaths, both genders combined
 - `deaths_age_country_b.rds`: Age distribution of deaths per country -- both
 - `YLL_covid19_age_cummulative.rds`: Age distribution of deaths per country and YLLs per age
