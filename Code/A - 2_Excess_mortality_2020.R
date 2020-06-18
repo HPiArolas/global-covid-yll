@@ -67,5 +67,5 @@ db4 <- bind_rows(db2, db3) %>%
   mutate(last_date = as.Date(paste(2020, last_week, 1, sep="-"), "%Y-%U-%u")) %>% 
   arrange(Country, Sex, suppressWarnings(as.integer(Age)))
 
-write_csv(db4,  file = here("Data", "covid_excess_pclm_5_delay.csv"))
+write_csv(db4,  path = here("Data", "covid_excess_pclm_5_delay.csv"))
 

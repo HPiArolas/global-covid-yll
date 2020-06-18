@@ -456,7 +456,7 @@ for (c in cts) {
   for (s in sxs) {
     for (a in ags) {
       cat(paste(c, s, a, "\n", sep = "_"))
-      fit_baseline(ct = c, sx = s, ag = a, ymin = ym)
+      try(fit_baseline(ct = c, sx = s, ag = a, ymin = ym))
     }
   }
 }
@@ -472,7 +472,7 @@ temp = list.files(here("Data","single_est"), pattern="*.csv")
 # i <- 1
 length(temp)
 for (i in 1:length(temp)) {
-  db_temp <- read_csv(temp[i]) %>% 
+  db_temp <- read_csv(here("Data","single_est",temp[i])) %>% 
     as_tibble() %>% 
     mutate(Sex = as.character(Sex),
            Sex = ifelse(Sex == "FALSE", "f", Sex))
@@ -481,5 +481,5 @@ for (i in 1:length(temp)) {
 
 detach(package:MASS)
 
-write_csv(db_all, file = here("Data", "baseline_excess_pclm_5.csv"))
+write_csv(db_all, path = here("Data", "baseline_excess_pclm_5.csv"))
 
