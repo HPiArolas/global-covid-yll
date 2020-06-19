@@ -31,8 +31,8 @@ out <-subset(out, Measure =="Deaths")
 
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
 # Needs to be included in repo
-nytexcess <- read.csv(here("Data", "NYTExcessDeaths.csv",
-                           sep=","))
+nytexcess <- read.csv(here("Data", "NYTExcessDeaths.csv"),
+                           sep=",")
 
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
@@ -694,7 +694,7 @@ yll.data.female.all<-do.call(rbind,yll.data.female)
 saveRDS(yll.data.female,
         file=here("Data","heart-yll-f-list.rds"))
 #this is the ver with all countries_mf in one full dataframe
-aveRDS(yll.data.female,
+saveRDS(yll.data.female,
        file=here("Data","heart-yll-f.rds"))
 ###################################################################################################
 ##
@@ -848,15 +848,14 @@ saveRDS(yll_rates,
 
 # Other Causes deaths: Substance (Substance abuse)
 ###################################################################################################
-out <- readRDS("Data","other_cause_substance.rds")
+out <- readRDS(here("Data","other_cause_substance.rds"))
 
 #choose YLL or Deaths
 out<-subset(out,Measure=="Deaths")
 ###################################################################################################
 
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
-if(!AL){nytexcess<-read.csv("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Excess deaths/NYTExcessDeaths.csv",sep=",")
-}else{nytexcess<-read.csv("Data/Excess deaths/NYTExcessDeaths.csv",sep=",")}
+nytexcess<-read.csv(here("Data","NYTExcessDeaths.csv"),sep=",")
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
 nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
@@ -1258,7 +1257,7 @@ out<-subset(out,Measure=="Deaths")
 ###################################################################################################
 
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
-nytexcess<-read.csv(here("Data","Excess deaths/NYTExcessDeaths.csv"),sep=",")
+nytexcess<-read.csv(here("Data","NYTExcessDeaths.csv"),sep=",")
 matched<-c("Austria","Belgium","Denmark","France","Germany","Italy","Netherlands","Norway"
            ,"Portugal","South Africa","Spain","Sweden","Switzerland")
 nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
@@ -1266,7 +1265,7 @@ nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-sle.gbd       <- readRDS("Data","country_gbd_sle.2016.rds")
+sle.gbd       <- readRDS(here("Data","country_gbd_sle.2016.rds"))
 # Country specific life expectancies
 sle_both.un   <- readRDS(here("Data","country_both_sle_un.rds"))
 sle_male.un   <- readRDS(here("Data","country_male_sle_un.rds"))
@@ -1626,7 +1625,7 @@ YLL.measures.rate.gbd$Date.edeath<-Date.edeath
 
 # saving
 saveRDS(YLL.measures.rate.gbd,
-        file=here("Data"/"drug_YLL_measures_rate_gbd.rds"))
+        file=here("Data","drug_YLL_measures_rate_gbd.rds"))
 
 ###################################################################################################
 ##
@@ -1671,7 +1670,7 @@ nytexcess<-nytexcess[which(nytexcess$Country%in%matched),]
 # SLE
 ###################################################################################################
 # GBD life expectancy best case standard
-sle.gbd       <- readRDS("Data","country_gbd_sle.2016.rds")
+sle.gbd       <- readRDS(here("Data","country_gbd_sle.2016.rds"))
 # Country specific life expectancies
 sle_both.un   <- readRDS(here("Data","country_both_sle_un.rds"))
 sle_male.un   <- readRDS(here("Data","country_male_sle_un.rds"))
@@ -1714,7 +1713,29 @@ pop_std.esp<-readRDS(here("Data","pop_std.esp.RDS"))
 
 # Which countries have gender 
 gender.count<-as.character(unique(out$Country[which(out$Sex=='f')]))
-# Coinciding for which we have data already collected, i.e. sample.countries
+# Coinciding for which we have data already collected, i.e. sa
+print(countries[i])
+tmp.ind<-which(as.character(yll.data.both.all$Country)==as.character(YLL.measures.rate.gbd$Country[i]))
+Date.death[i]<-yll.data.both.all$Date[tmp.ind][1]# Date at which death counts are collected
+Date.edeath[i]<-yll.data.both.all$Date[tmp.ind][1]# Need to change this bit when we have extended deaths
+tmp.var<-c("YLL.rate.gbd.b","YLL.rate.un.b","YLL.rate.gbd.b.ed","YLL.rate.un.b.ed")
+YLL.measures.rate.gbd[i,tmp.var]<-colSums(yll.data.both.all[tmp.ind, tmp.var]*(pop_std.gbd$percent_pop/100),na.rm=TRUE)
+tmp.var<-c("YLL.rate.gbd.m","YLL.rate.un.m","YLL.rate.gbd.m.ed","YLL.rate.un.m.ed")
+YLL.measures.rate.gbd[i,tmp.var]<-colSums(yll.data.male.all[tmp.ind, tmp.var]*(pop_std.gbd$percent_pop/100),na.rm=TRUE)
+tmp.var<-c("YLL.rate.gbd.f","YLL.rate.un.f","YLL.rate.gbd.f.ed","YLL.rate.un.f.ed")
+YLL.measures.rate.gbd[i,tmp.var]<-colSums(yll.data.female.all[tmp.ind, tmp.var]*(pop_std.gbd$percent_pop/100),na.rm=TRUE)
+
+print(countries[i])
+tmp.ind<-which(as.character(yll.data.both.all$Country)==as.character(YLL.measures.rate.gbd$Country[i]))
+Date.death[i]<-yll.data.both.all$Date[tmp.ind][1]# Date at which death counts are collected
+Date.edeath[i]<-yll.data.both.all$Date[tmp.ind][1]# Need to change this bit when we have extended deaths
+tmp.var<-c("YLL.rate.gbd.b","YLL.rate.un.b","YLL.rate.gbd.b.ed","YLL.rate.un.b.ed")
+YLL.measures.rate.gbd[i,tmp.var]<-colSums(yll.data.both.all[tmp.ind, tmp.var]*(pop_std.gbd$percent_pop/100),na.rm=TRUE)
+tmp.var<-c("YLL.rate.gbd.m","YLL.rate.un.m","YLL.rate.gbd.m.ed","YLL.rate.un.m.ed")
+YLL.measures.rate.gbd[i,tmp.var]<-colSums(yll.data.male.all[tmp.ind, tmp.var]*(pop_std.gbd$percent_pop/100),na.rm=TRUE)
+tmp.var<-c("YLL.rate.gbd.f","YLL.rate.un.f","YLL.rate.gbd.f.ed","YLL.rate.un.f.ed")
+YLL.measures.rate.gbd[i,tmp.var]<-colSums(yll.data.female.all[tmp.ind, tmp.var]*(pop_std.gbd$percent_pop/100),na.rm=TRUE)
+mple.countries
 gender.count.sample<-gender.count[which(is.element(gender.count,countries))]
 
 # Total count in the out file, not necessarily in our sample
