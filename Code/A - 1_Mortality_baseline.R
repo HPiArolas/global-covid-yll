@@ -76,7 +76,6 @@ boot_pi <- function(model, odata, pdata, n, p) {
 
 fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
 
-  cat(paste(ct, sx, ag, "\n", sep = "_"))
   skip_to_next <- F
 
   db2 <- db %>% 
@@ -139,7 +138,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     
     # negative binomial to account for overdispersion
     base_nb <- try(MASS::glm.nb(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
-                          data = db_bline, maxit = 1000), silent = T)
+                          data = db_bline), silent = T)
     ov_sign <- try(base_nb$theta / base_nb$SE.theta > 1.96, silent = T)
     if (class(base_nb)[1] == "try-error" | is.na(ov_sign)) {
       base_nb$aic <- base_po$aic
@@ -149,7 +148,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     # compare AIC between Poisson and Negative binomial and fit the best model
     if ((base_po$aic - base_nb$aic >= 6) & (ov_sign) & (base_nb$converged) & class(base_nb)[1] != "try-error") {
       base <- MASS::glm.nb(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
-                     data = db_bline, maxit = 1000)
+                     data = db_bline)
     } else {
       base <- glm(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
                   family = poisson, data = db_bline)
@@ -162,7 +161,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     
     # Negative binomial to account for overdispersion
     base_nb <- try(MASS::glm.nb(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
-                          data = db_bline, maxit = 1000), silent = T)
+                          data = db_bline), silent = T)
     ov_sign <- try(base_nb$theta / base_nb$SE.theta > 1.96, silent = T)
     if (class(base_nb)[1] == "try-error" | is.na(ov_sign)) {
       base_nb$aic <- base_po$aic
@@ -172,7 +171,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     # compare AIC between Poisson and Negative binomial and fit the best model
     if ((base_po$aic - base_nb$aic >= 6) & (ov_sign) & (base_nb$converged) & class(base_nb)[3] != "try-error") {
       base <- MASS::glm.nb(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
-                     data = db_bline, maxit = 1000)
+                     data = db_bline)
     } else {
       base <- glm(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
                   family = poisson, data = db_bline)
@@ -380,7 +379,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     
     # negative binomial to account for overdispersion
     base_nb <- try(MASS::glm.nb(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
-                          data = db_bline, maxit = 1000), silent = T)
+                          data = db_bline), silent = T)
     ov_sign <- try(base_nb$theta / base_nb$SE.theta > 1.96, silent = T)
     if (class(base_nb)[1] == "try-error" | is.na(ov_sign)) {
       base_nb$aic <- base_po$aic
@@ -390,7 +389,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     # compare AIC between Poisson and Negative binomial and fit the best model
     if ((base_po$aic - base_nb$aic >= 6) & (ov_sign) & (base_nb$converged) & class(base_nb)[1] != "try-error") {
       base <- MASS::glm.nb(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
-                     data = db_bline, maxit = 1000)
+                     data = db_bline)
     } else {
       base <- glm(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
                   family = poisson, data = db_bline)
@@ -403,7 +402,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     
     # Negative binomial to account for overdispersion
     base_nb <- try(MASS::glm.nb(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
-                          data = db_bline, maxit = 1000), silent = T)
+                          data = db_bline), silent = T)
     ov_sign <- try(base_nb$theta / base_nb$SE.theta > 1.96, silent = T)
     if (class(base_nb)[1] == "try-error" | is.na(ov_sign)) {
       base_nb$aic <- base_po$aic
@@ -413,7 +412,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     # compare AIC between Poisson and Negative binomial and fit the best model
     if ((base_po$aic - base_nb$aic >= 6) & (ov_sign) & (base_nb$converged) & class(base_nb)[3] != "try-error") {
       base <- MASS::glm.nb(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
-                     data = db_bline, maxit = 1000)
+                     data = db_bline)
     } else {
       base <- glm(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
                   family = poisson, data = db_bline)

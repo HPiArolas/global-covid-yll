@@ -26,10 +26,9 @@ library(splines)
 library(MASS)
 library(gnm)
 
-here<- here::here
+here <- here::here
 
 # 1) 
-
 source(here("Code","A - 1_Mortality_baseline.R"))
 
 # 2) 
