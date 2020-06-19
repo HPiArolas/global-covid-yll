@@ -207,7 +207,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
 ####################################################
 # estimating baseline for each country, sex, and age
 ####################################################
-cts <- c("Netherlands", "Norway", "Portugal", "Spain", "Sweden", "USA")
+
 for (c in cts) {
   dbc <- db %>%
     filter(Country == c)
@@ -231,7 +231,7 @@ temp = list.files(here("Data","single_est"), pattern="*.csv")
 # i <- 1
 length(temp)
 for (i in 1:length(temp)) {
-  db_temp <- read_csv(temp[i]) %>% 
+  db_temp <- read_csv(here("Data","single_est", temp[i])) %>% 
     as_tibble() %>% 
     mutate(Sex = as.character(Sex),
            Sex = ifelse(Sex == "FALSE", "f", Sex))
