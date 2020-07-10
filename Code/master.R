@@ -30,27 +30,30 @@ library(scales)
 here <- here::here
 
 # 1) 
-source(here("Code","A - 1_Mortality_baseline.R"))
+source(here("Code","A1 - Mortality_baseline.R"))
 
 # 2) 
-source(here("Code","A - 2_Excess_mortality_2020.R"))
+source(here("Code","A2 - Excess_mortality_2020.R"))
 
 # 3) 
+source(here("Code","A3 - Figures baseline_deaths_excess.R"))
+
+# 4) 
 source(here("Code","B - Excess YLL.R"))
 
-# 4)
+# 5)
 source(here("Code","B - Other Causes YLL.R"))
 
-# 5)
+# 6)
 source(here("Code","B - Projected YLL.R"))
 
-# 6)
+# 7)
 source(here("Code","C - Compilation final measures.R"))
 
-# 7)
+# 8)
 source(here("Code","C - Figures.R"))
 
-# 8)
+# 9)
 source(here("Code","C - Final tables.R"))
 
 

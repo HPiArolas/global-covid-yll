@@ -10,7 +10,7 @@
 # Description:
 # Calculates EXCESS deaths from weekly mortality baselines in all countries by sex and age 
 
-registerDoParallel(cores = 80)
+registerDoParallel(cores = 4)
 
 if (!dir.exists(here("Data","single_est"))){
   dir.create(here("Data","single_est"))
@@ -202,24 +202,24 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
                              "single_est", 
                              paste0(ct, "_", sx, "_", ag, "_weekly_mortality_tibble.csv")))
   
-  db4 %>%
-    ggplot()+
-    geom_line(aes(date, Deaths))+
-    geom_ribbon(aes(date, ymin = lp, ymax = up), fill = "#2ca25f", alpha = 0.3)+
-    geom_line(aes(date, pred), col = "#2ca25f", alpha = 0.9)+
-    labs(title=paste0(ct, "_", sx, "_", ag))+
-    theme_bw()+
-    theme(
-      panel.grid.minor = element_blank(),
-      plot.title = element_text(size=13),
-      axis.text.x = element_text(size=10),
-      axis.text.y = element_text(size=10),
-      axis.title.x = element_text(size=11),
-      axis.title.y = element_text(size=11)
-    )+
-    ggsave(here("Data",
-                "figures",
-                paste0(ct, "_", sx, "_", ag, ".png")), dpi = 300, width = 6, height = 4)
+  # db4 %>%
+  #   ggplot()+
+  #   geom_line(aes(date, Deaths))+
+  #   geom_ribbon(aes(date, ymin = lp, ymax = up), fill = "#2ca25f", alpha = 0.3)+
+  #   geom_line(aes(date, pred), col = "#2ca25f", alpha = 0.9)+
+  #   labs(title=paste0(ct, "_", sx, "_", ag))+
+  #   theme_bw()+
+  #   theme(
+  #     panel.grid.minor = element_blank(),
+  #     plot.title = element_text(size=13),
+  #     axis.text.x = element_text(size=10),
+  #     axis.text.y = element_text(size=10),
+  #     axis.title.x = element_text(size=11),
+  #     axis.title.y = element_text(size=11)
+  #   )+
+  #   ggsave(here("Data",
+  #               "figures",
+  #               paste0(ct, "_", sx, "_", ag, ".png")), dpi = 300, width = 6, height = 4)
   
   return(db4)
 }
