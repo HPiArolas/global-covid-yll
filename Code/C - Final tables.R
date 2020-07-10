@@ -99,7 +99,7 @@ table_excess<-data.frame(
               YLL_rates_deaths=excess$YLL_rates_b_deaths, 
               Ratio_excess_death=excess$Ratio_excess_death
 )
-
+ 
 write.csv(table_excess,file='table_excess.csv')
 saveRDS(table_excess,file='table_excess.rds')
 

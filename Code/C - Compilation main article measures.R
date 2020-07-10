@@ -129,7 +129,7 @@ tmp.var<-c( "YLL.un.b",
 results.gender.total[,tmp.var]<-colSums(yll_gendered[, tmp.var],na.rm=TRUE)
 YLL_men_over_total<-results.gender.total$YLL.un.m/(results.gender.total$YLL.un.f+results.gender.total$YLL.un.m)
 YLL_women_over_total<-results.gender.total$YLL.un.f/(results.gender.total$YLL.un.f+results.gender.total$YLL.un.m)
-results.gender.total$YLL.un.m/results.gender.total$YLL.un.f #In text "Men have lost 47% more years of life than women"
+results.gender.total$YLL.un.m/results.gender.total$YLL.un.f #In text "Men have lost 51% more years of life than women"
 ## Global age 
 ###################################################################################################
 table_global_YLL_age_cut_offs<-yll_global_cut_off     
@@ -176,6 +176,7 @@ stargazer(table_gender_imbalance,summary=FALSE, rownames=FALSE)
 ## Compensatory deaths
 ###################################################################################################
 weighted.mean(initial_guess$Equal_prop, initial_guess$death_weight,na.rm=TRUE)
+mean(initial_guess$Equal_prop,na.rm=TRUE)
 
 ## Projected YLLs
 ###################################################################################################
@@ -197,20 +198,25 @@ death_dates_excess<-na.exclude(death_dates_excess)
 
 stargazer(death_dates_excess, summary=FALSE, rownames=FALSE)
 
+# Ratio of covid YLL to excess YLL
+ratio_covid_excess<-data.frame(country=excess$Country,
+                               coverage_covid=excess$YLL_rates_b_deaths/excess$YLL_rates_b_excess_deaths,
+                               excess_over_covid=excess$YLL_rates_b_excess_deaths/excess$YLL_rates_b_deaths)
+
 ## Deaths that equalize 
 ###################################################################################################
 
 table_equalizing_deaths<-data.frame(Country=initial_guess$Country,
                                     'Equalizing proportion'=initial_guess$Equal_prop)
 
+# the death weighted average is computed in the code file: C - Compilation final measures
 stargazer(table_equalizing_deaths, summary=FALSE, rownames=FALSE)
 
-# Subset out the 3 african countries with fewer than 6 deaths
 # Total YLL lost 
 # Total YLL lost males - females
 # Age cut offs years of life lost -- global and country specific 
 # Total number of deaths
-# Calculation for Mikko equivalent number of deaths reduction.
+# Calculation equivalent number of deaths reduction.
 # Average YLL per death.
 # Male and female deaths, and age at which they happen.
 # Average age at which deaths happen.

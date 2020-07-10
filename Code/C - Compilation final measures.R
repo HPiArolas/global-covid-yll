@@ -67,7 +67,7 @@ excess_sample<-readRDS("Data/Processed/sample.excess.rds")
 
 # Original sample of deaths
 ###################################################################################################
-out<-readRDS("Data/Processed/deathcounts_clean12-6-2020.rds")
+out<-readRDS("Data/Processed/deathcounts_clean07-7-2020.rds")
 
 # Population
 ###################################################################################################
@@ -99,7 +99,7 @@ YLL_excess_measures_rate_esp<-readRDS("Data/Processed/YLL_excess_measures_rate_e
 YLL_excess_measures_rate_gbd<-readRDS("Data/Processed/YLL_excess_measures_rate_gbd.rds")
 YLL_excess_measures_rate_gbd_cpop<-readRDS("Data/Processed/YLL_excess_measures_rate_gbd_cpop.rds")
 YLL_excess_list<-readRDS("Data/Processed/yll-excess-list.rds")
-excess_dates_table<-readRDS('excess_dates_table.RDS') 
+excess_dates_table<-readRDS('Data/Processed/excess_dates_table_10_07_2020.RDS') 
 
 
 # YLLs COVID-19 - projected
@@ -444,7 +444,7 @@ Age_distribution<-vector("list",length=length(our_sample))
 for (i in 1:length(YLL.b.age)){
   Age_distribution[[i]]<-data.frame(Country=YLL.b.age[[i]]$Country)
   tmp.var<-c('Age')
-  Age_distribution[[i]][,tmp.var]<-YLL.b.age[[1]]$Age
+  Age_distribution[[i]][,tmp.var]<-YLL.b.age[[i]]$Age
   tmp.var<-c('Deaths_both')
   Age_distribution[[i]][,tmp.var]<-YLL.b.age[[i]]$Deaths
   tmp.var<-c('Deaths_m')
@@ -461,7 +461,7 @@ for (i in 1:length(YLL.b.age)){
   }
   
  }
-    
+
 ## Age distribution of YLL -- all genders
 ################################################################################################### 
 
