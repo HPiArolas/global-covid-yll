@@ -25,6 +25,7 @@ library(stats)
 library(splines)
 library(MASS)
 library(gnm)
+library(scales)
 
 here <- here::here
 

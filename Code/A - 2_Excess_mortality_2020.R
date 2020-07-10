@@ -10,21 +10,19 @@
 # Description:
 # Summarize EXCESS deaths since 24th February, 2020, in all countries by sex and age 
 
-rm(list=ls())
-
 db_all <- read_csv(here("Data", "baseline_excess_pclm_5.csv"))
 
 unique(db_all$Country)
 
-# countries with 2 weeks delay in weekly deaths reports 
-delays <- c("Finland", "USA", "Norway", "Spain", "Sweden")
+# HMD: "Data for 2020 is preliminary and for the last 1-3 available weeks may be incomplete"
 
 max_week <- db_all %>%  
   filter(Year == 2020) %>% 
   group_by(Country) %>% 
   summarise(last_week = max(Week)) %>% 
-  mutate(last_week = ifelse(Country %in% delays, last_week - 2, last_week))
-  
+  mutate(last_week = last_week - 3) %>% 
+  ungroup()
+
 db2 <- db_all %>% 
   left_join(max_week) %>%
   filter(date >= "2020-02-24",
@@ -39,7 +37,7 @@ db2 <- db_all %>%
             excess = sum(excess),
             excess_lp = sum(excess_lp),
             excess_up = sum(excess_up),
-            last_week = max(Week)) %>% 
+            last_week = max(last_week)) %>% 
   ungroup()
 
 unique(db2$Sex)
@@ -60,12 +58,14 @@ db3 <- db2 %>%
             excess_lp = sum(excess_lp),
             excess_up = sum(excess_up),
             last_week = max(last_week)) %>% 
-  mutate(Age = "Aggr")
+  mutate(Age = "All")
 
 db4 <- bind_rows(db2, db3) %>% 
   ungroup() %>% 
   mutate(last_date = as.Date(paste(2020, last_week, 1, sep="-"), "%Y-%U-%u")) %>% 
   arrange(Country, Sex, suppressWarnings(as.integer(Age)))
+
+unique(db4$Age)
 
 write_csv(db4,  path = here("Data", "covid_excess_pclm_5_delay.csv"))
 

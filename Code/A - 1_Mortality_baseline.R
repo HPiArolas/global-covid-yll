@@ -10,7 +10,7 @@
 # Description:
 # Calculates EXCESS deaths from weekly mortality baselines in all countries by sex and age 
 
-registerDoParallel(cores = 4)
+registerDoParallel(cores = 80)
 
 if (!dir.exists(here("Data","single_est"))){
   dir.create(here("Data","single_est"))
@@ -77,7 +77,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
   cat(paste(ct, sx, ag, "\n", sep = "_"))
   
   skip_to_next <- F
-
+  
   db2 <- db %>% 
     filter(Country == ct,
            Sex == sx,
@@ -138,7 +138,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     
     # negative binomial to account for overdispersion
     base_nb <- try(MASS::glm.nb(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
-                          data = db_bline), silent = T)
+                                data = db_bline), silent = T)
     ov_sign <- try(base_nb$theta / base_nb$SE.theta > 1.96, silent = T)
     if (class(base_nb)[1] == "try-error" | is.na(ov_sign)) {
       base_nb$aic <- base_po$aic
@@ -148,7 +148,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     # compare AIC between Poisson and Negative binomial and fit the best model
     if ((base_po$aic - base_nb$aic >= 6) & (ov_sign) & (base_nb$converged) & class(base_nb)[1] != "try-error") {
       base <- MASS::glm.nb(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
-                     data = db_bline)
+                           data = db_bline)
     } else {
       base <- glm(Deaths ~ splines::ns(t, 3) + sn52 + cs52 + offset(log(exposure)), 
                   family = poisson, data = db_bline)
@@ -161,7 +161,7 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     
     # Negative binomial to account for overdispersion
     base_nb <- try(MASS::glm.nb(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
-                          data = db_bline), silent = T)
+                                data = db_bline), silent = T)
     ov_sign <- try(base_nb$theta / base_nb$SE.theta > 1.96, silent = T)
     if (class(base_nb)[1] == "try-error" | is.na(ov_sign)) {
       base_nb$aic <- base_po$aic
@@ -171,21 +171,21 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
     # compare AIC between Poisson and Negative binomial and fit the best model
     if ((base_po$aic - base_nb$aic >= 6) & (ov_sign) & (base_nb$converged) & class(base_nb)[3] != "try-error") {
       base <- MASS::glm.nb(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
-                     data = db_bline)
+                           data = db_bline)
     } else {
       base <- glm(Deaths ~ splines::ns(t, 3) + offset(log(exposure)), 
                   family = poisson, data = db_bline)
     }
   }
-
+  
   ################################################
   # predicting values and 95% confidence intervals
   ################################################
   
   # bootstrapping
   tryCatch({
-  db3 <- cbind(db2, 
-               boot_pi(base, db_bline, db2, 2000, 0.95))
+    db3 <- cbind(db2, 
+                 boot_pi(base, db_bline, db2, 2000, 0.95))
   }, error=function(e){ skip_to_next <<- TRUE})
   
   if(skip_to_next) { next } 
@@ -201,6 +201,26 @@ fit_baseline <- function(ct = c, sx = s, ag = a, ymin = ym) {
   write_csv(db4, path = here("Data",
                              "single_est", 
                              paste0(ct, "_", sx, "_", ag, "_weekly_mortality_tibble.csv")))
+  
+  db4 %>%
+    ggplot()+
+    geom_line(aes(date, Deaths))+
+    geom_ribbon(aes(date, ymin = lp, ymax = up), fill = "#2ca25f", alpha = 0.3)+
+    geom_line(aes(date, pred), col = "#2ca25f", alpha = 0.9)+
+    labs(title=paste0(ct, "_", sx, "_", ag))+
+    theme_bw()+
+    theme(
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size=13),
+      axis.text.x = element_text(size=10),
+      axis.text.y = element_text(size=10),
+      axis.title.x = element_text(size=11),
+      axis.title.y = element_text(size=11)
+    )+
+    ggsave(here("Data",
+                "figures",
+                paste0(ct, "_", sx, "_", ag, ".png")), dpi = 300, width = 6, height = 4)
+  
   return(db4)
 }
 
@@ -241,4 +261,3 @@ for (i in 1:length(temp)) {
 detach(package:MASS)
 
 write_csv(db_all, path = here("Data", "baseline_excess_pclm_5.csv"))
-
