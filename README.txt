@@ -30,7 +30,7 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `B - Projected YLL.R`: calculations of YLL for projected scenarios.
 - `C - Compilation final measures.R`: creates measures cited throughout manuscript.
 - `C - Final tables.R`: creates tables in manuscript, and a few extra.
-- `C - Figures.R`: creates plots, some used in manuscript.
+- `C - Figures.R` and `Example_figures.rmd`: creates plots, some used in manuscript.
 
 # Main data file descriptions
 - `stmf_5.rds`: Short term mortality fluctuations in 5-years age groups
