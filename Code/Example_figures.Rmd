@@ -65,6 +65,10 @@ library(xtable)
 #colors
 plot_col<-viridis(n=5,alpha=1,begin=0,end=1,option="E")
 plot_col2<-viridis(n=5,alpha=1,begin=0,end=1,option="D")
+```
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 tmp_file<-"../Data/Final results/table_covid_other.csv"
 
 ## Fig 1 data
@@ -135,12 +139,22 @@ gender2<-gender2[order(gender2$Rate,gender2$Country,decreasing=FALSE,na.last=FAL
 gender2$Country<-factor(as.character(gender2$Country),levels=as.character(gender2$Country))
 gender2$Rate_color<-ifelse(gender2$Rate>1,plot_col[4],ifelse(gender2$Rate<1,plot_col[1],"white"))
 #add global average to bottom so it's above Taiwan in the plot
+#create population weights for weighted average
+pop<-read.csv("../Data/Processed/pop_complete.csv")
+pop<-data.frame(Country=names(tapply(pop$Total,pop$Country,sum)),Population=tapply(pop$Total,pop$Country,sum))
+gender2$pop<-pop$Population[match(gender2$Country,pop$Country)]
 global_gender<-data.frame(Country=c("","WEIGHTED AVERAGE","AVERAGE"),Date=rep(NA,3),YLL.b_abs=rep(NA,3)
                   ,YLL.b_rates=rep(NA,3),YLL.m_rates=rep(NA,3),YLL.f_rates=rep(NA,3),Deaths=rep(NA,3)
                   ,Deaths_m=rep(NA,3),Deaths_f=rep(NA,3),YLL_per_death_b=rep(NA,3)
                   ,YLL_per_death_males=rep(NA,3),YLL_per_death_females=rep(NA,3)
                   ,YLL_rates_male_to_female=rep(NA,3),Continent=rep(NA,3),Continent_col=rep(NA,3)
-                  ,Rate=c(NA,1.29,1.39),Rate_color=c(NA,plot_col[5],plot_col[5]))
+                  ,Rate=c(NA
+                          ,sum(gender2$Deaths/sum(gender2$Deaths,na.rm=TRUE)*gender2$YLL_rates_male_to_female,na.rm=TRUE) #weighted
+                          #,sum(gender2$Rate*gender2$pop,na.rm=TRUE)/sum(gender2$pop,na.rm=TRUE)
+                          ,mean(gender2$YLL.m_rates,na.rm=TRUE)/mean(gender2$YLL.f_rates,na.rm=TRUE) #avg
+                          #,mean(gender2$Rate,na.rm=TRUE)
+                          ) #NA, weighted avg, avg
+                  ,Rate_color=c(NA,plot_col[5],plot_col[5]), pop=rep(NA,3))
 gender2<-rbind(gender2,global_gender)
 gender2$Country<-factor(as.character(gender2$Country),levels=as.character(gender2$Country))
 age<-readRDS("../Data/Final results/table_YLL_age_cut_offs.rds")
@@ -167,7 +181,7 @@ tmp<-tmp[order(tmp$Proportion,decreasing=FALSE),]
 age$Country<-factor(as.character(age$Country),levels=as.character(tmp$Country))
     #add global average at the bottom so it translates to top (above Bangladesh)
 global_age<-data.frame(Country=rep(c("","GLOBAL AVERAGE"),each=3),Age=rep(c("Under 55","55-75","75+"),2)
-                  ,Proportion=c(NA,NA,NA,0.33,0.45,0.22),Continent=rep(NA,6),Continent_col=rep(NA,6))
+                  ,Proportion=c(NA,NA,NA,0.241,0.422,0.337),Continent=rep(NA,6),Continent_col=rep(NA,6))
 age2<-rbind(age,global_age)
 
 #for SI plots the first data YLL_covid19_complete, so just sync up days since into it
@@ -181,7 +195,6 @@ si1$Diff.Days<-days$Diff.Days[matched[which(!is.na(matched))]]
 
 **Baseline plot: Flu**
 
-
 ```{r, echo=FALSE,eval=TRUE,warning = FALSE}
 flu_base_plot <-ggplot(Base2, aes(x=`Flu (med)`, y=Country)) +
     geom_point(shape=15,color=plot_col2[2], size=3.5, alpha=1) +
@@ -193,17 +206,20 @@ flu_base_plot <-ggplot(Base2, aes(x=`Flu (med)`, y=Country)) +
                ,aes(x=x,y=y),shape=c(15,15),color=c(plot_col2[2:3]),size=3.5) +
     annotate(geom="text",x=c(5.2,5.2),y=c(4,2),label=c("Median influenza year"
                ,"Maximum influenza year"),size=3,col=c("gray20")) +
-    annotate(geom="text",x=1.1,y=42,label="0.777",size=3,col=plot_col2[2])+
-    annotate(geom="text",x=0.35,y=42,label="0.596",size=3,col=plot_col2[3])+
+    annotate(geom="text",x=1.2,y=42,label=paste(round(mean(Base2$`Flu (med)`),3)),size=3.5,col=plot_col2[2])+
+    annotate(geom="text",x=0.32,y=42,label=paste(round(mean(Base2$`Flu (max)`),3)),size=3.5,col=plot_col2[3])+
     #average lines
     geom_vline(xintercept=mean(Base2$`Flu (med)`) ,linetype="solid", color=plot_col2[2], 
                size=1.25, alpha = 0.65)+
     geom_vline(xintercept=mean(Base2$`Flu (max)`), linetype="solid", color=plot_col2[3], 
                size=1.25, alpha = 0.65)+
-    theme_light() + ylab("")+ xlab("A. Ratio of years of life lost due to COVID-19 vs seasonal influenza") +
+    theme_light() + ylab("") + 
+    #xlab("Ratio of years of life lost due to COVID-19 vs seasonal influenza") +
+    xlab("A. Ratio of years of life lost due to COVID-19 vs seasonal influenza") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
           , axis.text.y=element_text(colour="gray20"))
-#flu_base_plot
+flu_base_plot
+#Fig1_flu.pdf -- without xlab A
 ```
 
 ### Transport Panel
@@ -219,11 +235,14 @@ transport_base_plot <-ggplot(Base2, aes(x=Transport, y=Country)) +
     #average lines
     geom_vline(xintercept=mean(Base2$Transport) ,linetype="solid", color=plot_col2[1], 
                size=1.25, alpha = 0.65) +
-    annotate(geom="text",x=0.8,y=42,label="0.620",size=3,col=plot_col2[1])+
-    theme_light() + ylab("")+ xlab("B. Ratio of years of life lost due to COVID-19 vs transport") +
+    annotate(geom="text",x=0.9,y=42,label=paste(round(mean(Base2$Transport),3)),size=3.5,col=plot_col2[1])+
+    theme_light() + ylab("")+ 
+    #xlab("Ratio of years of life lost due to COVID-19 vs transport") +
+    xlab("B. Ratio of years of life lost due to COVID-19 vs transport") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
           , axis.text.y=element_text(colour="gray20"))
 #transport_base_plot
+#Fig1_transport.pdf -- without xlab B
 ```
 
 ### Heart Panel
@@ -238,11 +257,14 @@ heart_base_plot <-ggplot(Base2, aes(x=Heart, y=Country)) +
     #average lines
     geom_vline(xintercept=mean(Base2$Heart) ,linetype="solid", color=plot_col2[4], 
                size=1.25, alpha = 0.65) +
-    annotate(geom="text",x=0.065,y=42,label="0.052",size=3,col=plot_col2[4])+
-    theme_light() + ylab("")+ xlab("C. Ratio of years of life lost due to COVID-19 vs heart diseases") +
+    annotate(geom="text",x=0.09,y=42,label=paste(round(mean(Base2$Heart),3)),size=3.5,col=plot_col2[4])+
+    theme_light() + ylab("")+ 
+    #xlab("Ratio of years of life lost due to COVID-19 vs heart diseases") +
+    xlab("C. Ratio of years of life lost due to COVID-19 vs heart diseases") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
           , axis.text.y=element_text(colour="gray20"))
 #heart_base_plot
+#Fig1_heart.pdf -- without xlab C
 ```
 
 
@@ -259,11 +281,14 @@ excess_base_plot <-ggplot(Base2, aes(x=Excess, y=Country)) +
     #average lines
     geom_vline(xintercept=mean(Base2$Excess,na.rm=TRUE) ,linetype="solid", color=plot_col2[5], 
                size=1.25, alpha = 0.65) +
-    annotate(geom="text",x=0.61,y=42,label="0.561",size=3,col="goldenrod4")+ #color too light as yellow#plot_col2[5])+
-    theme_light() + ylab("")+ xlab("D. Ratio of years of life lost due to COVID-19 vs excess mortality") +
+    annotate(geom="text",x=0.62,y=42,label=paste(round(mean(Base2$Excess,na.rm=TRUE),3)),size=3.5,col="goldenrod3")+ #color too light as yellow#plot_col2[5])+
+    theme_light() + ylab("") + 
+    #xlab("Ratio of years of life lost due to COVID-19 vs excess mortality") +
+    xlab("D. Ratio of years of life lost due to COVID-19 vs excess mortality") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
           , axis.text.y=element_text(colour="gray20"))
 #excess_base_plot
+#Fig1_excess.pdf -- without xlab D
 ```
 
 
@@ -274,11 +299,14 @@ excess_base_plot <-ggplot(Base2, aes(x=Excess, y=Country)) +
 grid.arrange(flu_base_plot,transport_base_plot,heart_base_plot,excess_base_plot, ncol=2)
 ```
 
-
+[2x2 panel saved as `Fig1.pdf` in Figures folder on DB.]{color="blue"}
 
 ## Fig 1 Deaths-weighted averages in a table for SI
 
+This LaTex table (for insertion into SI tex file) is so we can say  "The conclusions are robust to using weighted averages (SI)".
+
 ```{r, echo=FALSE,eval=TRUE,warning = FALSE, fig.width=12, fig.height=7}
+#si_table1<-data.frame(Cause=c("Influenza median year","Influenza maximum year","Transport","Heart","Excess mortality"),Mean=c(mean(Base2$`Flu (med)`,na.rm=TRUE),mean(Base2$`Flu (max)`,na.rm=TRUE),mean(Base2$Transport,na.rm=TRUE),mean(Base2$Heart,na.rm=TRUE),mean(Base2$Excess,na.rm=TRUE)),Weighted_Mean=c())
 matched<-match(as.character(si1$Country),as.character(Base2$Country))
 Base2$Deaths<-si1$Deaths[matched]
 fig1_weight<-data.frame(Ratio=c("Ratio COVID YLL to Flu (median year) YLL","Ratio COVID YLL to Flu (max year) YLL"
@@ -299,18 +327,24 @@ x
 
 **Baseline plot: Under 55**
 
+
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
 ##ordered by 55
 age55_base_plot<-ggplot(age2, aes(fill=Age, y=Proportion, x=Country)) + 
     geom_bar(position="stack", stat="identity") + coord_flip() +
     scale_fill_viridis(discrete = T,option = "E", alpha=0.85) +
-    xlab("")+ylab("A.  Proportion of years of life lost by age group") +
+    #Add global average values
+    annotate(geom="text",x=rep(44,3),y=c(0.16,0.58,0.88),label=c("0.241","0.422","0.337"),size=3.5,col=c("gray50","white","white")) + #from S7 Table weighted proportions for Figure 2
+    xlab("") + 
+    ylab("Proportion of years of life lost by age group") +
+    #ylab("A.  Proportion of years of life lost by age group") +
     theme_bw() +
     ggtitle(" ") +
     theme(panel.border = element_blank(), axis.ticks.y = element_blank()
           , axis.text.y=element_text(colour="gray20")) +
     guides(fill = guide_legend(reverse=TRUE)) #-55 first
 age55_base_plot
+#Fig2_age - without A.
 ```
 
 ### Gender Panel
@@ -319,7 +353,7 @@ age55_base_plot
 
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
 tmp_mean<-mean(gender2$YLL.m_rates,na.rm=TRUE)/mean(gender2$YLL.f_rates,na.rm=TRUE)
-tmp_mean_weight<-sum(gender2$Deaths/sum(gender2$Deaths)*gender2$YLL_rates_male_to_female,na.rm=TRUE)
+tmp_mean_weight<-sum(gender2$Deaths/sum(gender2$Deaths,na.rm=TRUE)*gender2$YLL_rates_male_to_female,na.rm=TRUE)
 ## Running through examples of log-axes
 gender_base_plot<-ggplot(gender2, aes(y=Country, x=Rate)) +
   geom_point(color=gender2$Rate_color, size=4) +
@@ -328,8 +362,10 @@ gender_base_plot<-ggplot(gender2, aes(y=Country, x=Rate)) +
   geom_vline(xintercept=1,linetype="solid"
              ,color=viridis(n=1,alpha=1,begin=0.25,end=1,option="E"),size=1.25) +
   #add in global and weighted avg values
-  annotate(geom="text",x=c(1.39+0.2,1.29+0.2),y=c(44,43),label=c("1.39","1.29"),size=3,col="gray20")+ 
-  theme_bw() + xlab("B.  Ratio of male to female years of life lost") + ylab("") + 
+  annotate(geom="text",x=c(1.9,1.85,0.66,1.4),y=c(44,43,3,3)
+           ,label=c(paste(round(tmp_mean,3)),paste(round(tmp_mean_weight,3)),"Women\n more\n affected","Men\n more\n affected"),size=c(rep(3.5,2),3.7,3.7),col="gray20")+ 
+  #theme_bw() + xlab("B.  Ratio of male to female years of life lost") + ylab("") + 
+  theme_bw() + xlab("Ratio of male to female years of life lost") + ylab("") + 
   theme(panel.border = element_blank(), axis.ticks.y = element_blank()
           , axis.text.y=element_text(colour="gray20")
         ,plot.title = element_text(face="bold",colour="gray20", size=10))
@@ -339,13 +375,30 @@ gender_natural<-gender_base_plot +
         axis.ticks.x = element_line(color = rep("gray90",6),
                           size = rep(.5,6)))
 gender_natural
+#Fig2_gender
 ```
 
 **Use log10 x-axis scale**
 
+
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
-gender_log<-gender_base_plot + scale_x_continuous(trans='log10',breaks = c(0.9,1,2,3,4)) + removeGridX()
+gender_base_plot2<-ggplot(gender2, aes(y=Country, x=Rate)) +
+  geom_point(color=gender2$Rate_color, size=4) +
+  geom_segment(aes(y=Country, yend=Country, x=1, xend=Rate),
+              color=gender2$Rate_color)+
+  geom_vline(xintercept=1,linetype="solid"
+             ,color=viridis(n=1,alpha=1,begin=0.25,end=1,option="E"),size=1.25) +
+  #add in global and weighted avg values
+  annotate(geom="text",x=c(1.74,1.28,0.93,1.1),y=c(44,43,4,4)
+           ,label=c(paste(round(tmp_mean,3)),paste(round(tmp_mean_weight,3)),"Women\n more\n affected","Men\n more\n affected"),size=c(rep(3.5,2),3.3,3.3),col="gray20")+ 
+  theme_bw() + xlab("B.  Ratio of male to female years of life lost") + ylab("") + 
+  #theme_bw() + xlab("Ratio of male to female years of life lost") + ylab("") + 
+  theme(panel.border = element_blank(), axis.ticks.y = element_blank()
+          , axis.text.y=element_text(colour="gray20")
+        ,plot.title = element_text(face="bold",colour="gray20", size=10))
+gender_log<-gender_base_plot2 + scale_x_continuous(trans='log10',breaks = c(0.9,1,2,3,4)) + removeGridX()
 gender_log
+#SFig9_Fig2_log_gender
 ```
 
 ### Combined
@@ -356,6 +409,9 @@ grid.arrange(age55_base_plot,gender_log,ncol=2) #SFig9_Fig2_log_gender
 ```
 
 ## Fig 2 Deaths-weighted averages in a table for SI
+
+This LaTex table (for insertion into SI tex file) is so we can say  "The conclusions are robust to using weighted averages (SI)".
+
 
 ```{r, echo=FALSE,eval=TRUE,warning = FALSE, fig.width=12, fig.height=7}
 #readRDS("../Data/Final results/ages_at_death_global.rds")
@@ -372,6 +428,8 @@ x<-xtable(total_YLL_by_age, caption = "Weighted Proportions for Figure 2: Propor
 x
 ```
 
+[Adding groups under 55 and between 55-75, we get `r sum(0.284+0.421)`, or 2/3 (70%) of the total YLL comes from ages under 75.]{color="blue"}
+
 ## SI figures
 
 ### YLL and the ratio of YLL to other causes of death both grow nonlinearly/exponentially(?) with days since
@@ -379,7 +437,7 @@ x
 **YLL grows nonlinearly with Days**
 
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
-si1_base_plot <- ggplot(data=si1,aes(x=Diff.Days,y=YLL.b_abs)) + geom_point(alpha=0.5) +
+si1_base_plot <- ggplot(data=si1,aes(x=Diff.Days,y=YLL.b_abs)) + geom_point(alpha=0.5) + xlim(26,170) +
                   stat_smooth(method = 'lm', formula = y ~ poly(x,2), color=plot_col[1], se= TRUE) +
                   theme_bw()+ xlab("Days since first COVID-19 case") 
                   
@@ -392,6 +450,8 @@ si1_plot<-si1_base_plot + ylab("Years of life lost") +
 si1_plot
 ```
 
+* Then plots "days since" against absolute YLL on log y-axis
+
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
 si1_log_plot<- si1_base_plot + scale_y_continuous(trans='log10') + ylab("Log scale Years of life lost") +
                 geom_text(data=si1 %>% filter(Country=="USA"|Country=="Brazil"|
@@ -399,7 +459,7 @@ si1_log_plot<- si1_base_plot + scale_y_continuous(trans='log10') + ylab("Log sca
                    Country=="France"|Country=="Mexico"|Country=="Sweden"|Country=="Canada"|
                    Country=="Taiwan"|Country=="South Africa"|Country=="Japan")
                    ,aes(label=Country),hjust=-0.0, vjust=0.0
-                   ,position = position_jitter(width=0.1,height=0.1))
+                   ,position = position_jitter(width=0.05,height=0.05))
 si1_log_plot
 ```
 
@@ -408,26 +468,30 @@ si1_log_plot
 grid.arrange(si1_plot,si1_log_plot,ncol=2)
 ```
 
+[Above plot saved as `Figures/SFig1.pdf` in DB.]{color="blue"}
 
 **Ratio of YLL to other causes of death grows nonlinearly with Days**
+
+* Plots "days since" against ratio covid YLL/flu YLL
 
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
 si_alpha<-0.5
 ##FLU
-si2_flu_base <- ggplot(data=Base2,aes(x=Diff.Days,y=`Flu (med)`)) + 
+si2_flu_base <- ggplot(data=Base2,aes(x=Diff.Days,y=`Flu (med)`)) + xlim(26,170) +
                   geom_point(color=plot_col2[3], alpha=si_alpha) +
                   stat_smooth(method = 'lm', formula = y ~ poly(x,2), color=plot_col[3], se= TRUE) +
                   theme_bw()+ xlab("Days since first COVID case") 
 si2_flu<- si2_flu_base + ylab("Ratio COVID YLL/Flu YLL") + 
   ggtitle("FLU") +
   geom_text(data=Base2 %>% filter(Country=="USA"|Country=="Brazil"|
-                   Country=="Chile"|Country=="Italy"|Country=="Spain"|Country=="England"|
-                   Country=="France"|Country=="Mexico"|Country=="Sweden"|Country=="Canada")
+                   Country=="Chile"|Country=="Italy"|Country=="Spain"|Country=="England"|#Country=="France"|
+                   Country=="Mexico"#|Country=="Sweden"
+                   |Country=="Canada")
                    ,aes(label=Country),hjust=-0.0, vjust=0.0
                    ,position = position_jitter(width=0.2,height=0.2))
 si2_flu
 ##Transport
-si2_transport_base <- ggplot(data=Base2,aes(x=Diff.Days,y=Transport)) + 
+si2_transport_base <- ggplot(data=Base2,aes(x=Diff.Days,y=Transport)) + xlim(26,170) +
                   geom_point(color=plot_col2[1], alpha=si_alpha) +
                   stat_smooth(method = 'lm', formula = y ~ poly(x,2), color=plot_col[3], se= TRUE) +
                   theme_bw()+ xlab("Days since first COVID case") 
@@ -441,7 +505,7 @@ si2_transport<- si2_transport_base + ylab("Ratio COVID YLL/Transport YLL") +
                    ,position = position_jitter(width=0.2,height=0.2))
 si2_transport
 ##Heart
-si2_heart_base <- ggplot(data=Base2,aes(x=Diff.Days,y=Heart)) + 
+si2_heart_base <- ggplot(data=Base2,aes(x=Diff.Days,y=Heart)) + xlim(26,170) +
                   geom_point(color=plot_col2[4], alpha=si_alpha) +
                   stat_smooth(method = 'lm', formula = y ~ poly(x,2), color=plot_col[3], se= TRUE) +
                   theme_bw()+ xlab("Days since first COVID case") 
@@ -457,7 +521,7 @@ si2_heart
 ##Excess
 si_excess_data<-Base2[which(!is.na(Base2$Excess)),]
 si_excess_data$Country<-factor(as.character(si_excess_data$Country))
-si2_excess_base <- ggplot(data=si_excess_data,aes(x=Diff.Days,y=Excess)) + 
+si2_excess_base <- ggplot(data=si_excess_data,aes(x=Diff.Days,y=Excess)) + xlim(75,170) +
                   geom_point(color=plot_col2[5], alpha=1) +
                   stat_smooth(method = 'lm', formula = y ~ poly(x,2), color=plot_col[3], se= TRUE) +
                   #stat_smooth(method = "loess", formula = y ~ x, size = 1) +
@@ -481,7 +545,8 @@ si2_logflu<- si2_flu_base + scale_y_continuous(trans='log10') + ylab("Log scale 
                 ggtitle("FLU") +
                 geom_text(data=Base2 %>% filter(Country=="USA"|Country=="Brazil"|
                    Country=="Chile"|Country=="Italy"|Country=="Norway"|Country=="Romania"|
-                   Country=="Portugal"|Country=="Mexico"|Country=="Sweden"|Country=="Canada"|
+                   Country=="Portugal"|Country=="Mexico"#|Country=="Sweden"
+                   |Country=="Canada"|
                    Country=="Taiwan"|Country=="South Africa"|Country=="Japan")
                    ,aes(label=Country),hjust=-0.0, vjust=0.0
                    ,position = position_jitter(width=0.1,height=0.1))
@@ -501,7 +566,8 @@ si2_logheart<- si2_heart_base + scale_y_continuous(trans='log10') + ylab("Log sc
                 ggtitle("HEART DISEASE") +
                 geom_text(data=Base2 %>% filter(Country=="USA"|
                    Country=="Chile"|Country=="Italy"|
-                   Country=="Mexico"|Country=="Sweden"|Country=="Canada"|
+                   Country=="Mexico"|#Country=="Sweden"|
+                     Country=="Canada"|
                    Country=="Taiwan"|Country=="South Africa"|Country=="Japan")
                    ,aes(label=Country),hjust=-0.0, vjust=0.0
                    ,position = position_jitter(width=0.1,height=0.1))
@@ -532,8 +598,9 @@ grid.arrange(si2_excess,si2_logexcess,ncol=2)#save 7x12
 #grid.arrange(si2_flu,si2_logflu,si2_transport,si2_logtransport,si2_heart,si2_logheart,si2_excess,si2_logexcess,ncol=2)
 ```
 
-### F2-A SI plots
+[Above plots saved as: full version `Figures/SFig2_all.pdf`; then 2 paneled versions by cause  `Figures/SFig3_flu.pdf`,`Figures/SFig4_transport.pdf`,`Figures/SFig5_heart.pdf`,`Figures/SFig6_excess.pdf` in DB.]{color="blue"}
 
+### F2-A SI plots
 
 ```{r,echo=FALSE,eval=TRUE,warning = FALSE,message=FALSE}
 age2_55<-subset(age2,Age=="Under 55"&(Country!="GLOBAL AVERAGE"&Country!=""))
@@ -554,7 +621,7 @@ si3_55_base<-ggplot(data=age2_55,aes(x=Diff.Days,y=Proportion)) +
 si3_55 <- si3_55_base + ylab("Proportion of YLL for Age under 55") + ggtitle("Age under 55") +
   geom_text(data=age2_55 %>% filter(Country=="USA"|Country=="Brazil"|
                    Country=="Chile"|Country=="Italy"|Country=="Spain"|Country=="England"|
-                   Country=="France"|Country=="Bangladesh"|Country=="Portugal"|Country=="Canada")
+                   Country=="France"|Country=="Bangladesh"|Country=="South Africa"|Country=="Canada")
                    ,aes(label=Country),hjust=-0.0, vjust=0.0
                    ,position = position_jitter(width=0.01,height=0.01))
 si3_55
@@ -570,12 +637,14 @@ si3_75_base<-ggplot(data=age2_75,aes(x=Diff.Days,y=Proportion)) +
 si3_75 <- si3_75_base + ylab("Proportion of YLL for Age over 75") + ggtitle("Age over 75") +
   geom_text(data=age2_75 %>% filter(Country=="USA"|Country=="Brazil"|
                    Country=="Chile"|Country=="Italy"|Country=="Spain"|Country=="England"|
-                   Country=="France"|Country=="Bangladesh"|Country=="Portugal"|Country=="Canada")
+                   Country=="France"|Country=="Bangladesh"|Country=="South Africa"|Country=="Canada")
                    ,aes(label=Country),hjust=-0.0, vjust=0.0
                    ,position = position_jitter(width=0.01,height=0.01))
 si3_75
 ```
 
+
+Age distribution of YLL is not strongly influenced by the duration since the outbreak (SI Figure 3): 
 
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
 legend_val<-c("Under 55" = plot_col[3], "75+" = plot_col[1])
@@ -594,6 +663,8 @@ si3_base <-ggplot(data=age2_55,aes(x=Diff.Days,y=Proportion,group = 1)) +
                   ,plot.title = element_text(face="bold",colour="gray20", size=10))
 si3_base
 ```
+
+[Combined plot of 75+ and <55 saved as `Figures/SFig7.pdf` in DB. ]{color="blue"}
 
 ## F2-B SI plots
 
@@ -633,6 +704,8 @@ si4_female <- si4_female_base + ylab("YLL rates for women") + ggtitle("Female YL
 si4_female
 ```
 
+gender distribution of YLL not strongly influenced by the duration since the outbreak (SI Figure 4):
+
 ```{r,echo=TRUE,eval=TRUE,warning = FALSE,message=FALSE}
 legend_val<-c("Male" = plot_col[3], "Female" = plot_col[1])
 si4<-ggplot(data=gender3,aes(x=Diff.Days,y=YLL.m_rates)) + 
@@ -648,3 +721,7 @@ si4<-ggplot(data=gender3,aes(x=Diff.Days,y=YLL.m_rates)) +
                   ,plot.title = element_text(face="bold",colour="gray20", size=10))
 si4
 ```
+
+[Combined plot saved as `Figures/SFig8.pdf` in DB.]{color="blue"}
+
+
