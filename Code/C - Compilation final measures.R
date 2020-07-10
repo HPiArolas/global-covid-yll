@@ -602,10 +602,10 @@ for (i in 1:length(results.YLL.b.cutt_off.country$Country)){
     results.YLL.b.age.country[[i]]$Age==50)][1]
   tmp.var<-paste('cut75')
   results.YLL.b.cutt_off.country[i,tmp.var]<-results.YLL.b.age.country[[i]]$YLL.un.b.cum[which(
-    results.YLL.b.age.country[[i]]$Age==75)][1]-results.YLL.b.cutt_off.country[i,'cut55']
+    results.YLL.b.age.country[[i]]$Age==70)][1]-results.YLL.b.cutt_off.country[i,'cut55']
   tmp.var<-paste('cut95')
   results.YLL.b.cutt_off.country[i,tmp.var]<-1-results.YLL.b.age.country[[i]]$YLL.un.b.cum[which(
-    results.YLL.b.age.country[[i]]$Age==75)][1]
+    results.YLL.b.age.country[[i]]$Age==70)][1]
 }  
 
 
@@ -638,10 +638,10 @@ results.YLL.b.cutt_off.global<-data.frame(Value='YLL_proportion')
     results.YLL.b.age.total$Age==50)][1]
   tmp.var<-paste('cut75')
   results.YLL.b.cutt_off.global[1,tmp.var]<-results.YLL.b.age.total$YLL.un.b.cum[which(
-    results.YLL.b.age.total$Age==75)]-results.YLL.b.cutt_off.global[1,'cut55']
+    results.YLL.b.age.total$Age==70)]-results.YLL.b.cutt_off.global[1,'cut55']
   tmp.var<-paste('cut95')
   results.YLL.b.cutt_off.global[1,tmp.var]<-1-results.YLL.b.age.total$YLL.un.b.cum[which(
-    results.YLL.b.age.total$Age==75)]
+    results.YLL.b.age.total$Age==70)]
 
 ###################################################################################################
 ##

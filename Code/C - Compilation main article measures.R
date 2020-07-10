@@ -65,7 +65,6 @@ if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID
 # Lists of countries
 ###################################################################################################
 
-AL<-FALSE
 # User defined directory
 if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Final results')
 }else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared/Data/Final results")}
@@ -129,7 +128,8 @@ tmp.var<-c( "YLL.un.b",
             "YLL.un.f")
 results.gender.total[,tmp.var]<-colSums(yll_gendered[, tmp.var],na.rm=TRUE)
 YLL_men_over_total<-results.gender.total$YLL.un.m/(results.gender.total$YLL.un.f+results.gender.total$YLL.un.m)
-
+YLL_women_over_total<-results.gender.total$YLL.un.f/(results.gender.total$YLL.un.f+results.gender.total$YLL.un.m)
+results.gender.total$YLL.un.m/results.gender.total$YLL.un.f #In text "Men have lost 47% more years of life than women"
 ## Global age 
 ###################################################################################################
 table_global_YLL_age_cut_offs<-yll_global_cut_off     
