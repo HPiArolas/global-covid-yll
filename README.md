@@ -27,7 +27,8 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `B - Excess YLL.R`: calculations of YLL for excess mortality.
 - `B - Other Causes YLL.R`: calculations of YLL for other causes of mortality.
 - `B - Projected YLL.R`: calculations of YLL for projected scenarios.
-- `C - Compilation final measures.R`: creates measures cited throughout manuscript.
+- `C - Compilation main article measures.R`: creates measures cited throughout manuscript.
+- `C - Compilation final measures.R`: prepares data to create the measures cited throughout manuscript.
 - `C - Final tables.R`: creates tables in manuscript, and a few extra.
 - `C - Figures.R`: creates plots, some used in manuscript.
 
