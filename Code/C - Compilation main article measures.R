@@ -129,7 +129,7 @@ tmp.var<-c( "YLL.un.b",
 results.gender.total[,tmp.var]<-colSums(yll_gendered[, tmp.var],na.rm=TRUE)
 YLL_men_over_total<-results.gender.total$YLL.un.m/(results.gender.total$YLL.un.f+results.gender.total$YLL.un.m)
 YLL_women_over_total<-results.gender.total$YLL.un.f/(results.gender.total$YLL.un.f+results.gender.total$YLL.un.m)
-results.gender.total$YLL.un.m/results.gender.total$YLL.un.f #In text "Men have lost 51% more years of life than women"
+results.gender.total$YLL.un.m/results.gender.total$YLL.un.f #In text "Men have lost 56% more years of life than women"
 ## Global age 
 ###################################################################################################
 table_global_YLL_age_cut_offs<-yll_global_cut_off     

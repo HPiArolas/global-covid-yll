@@ -67,7 +67,7 @@ excess_sample<-readRDS("Data/Processed/sample.excess.rds")
 
 # Original sample of deaths
 ###################################################################################################
-out<-readRDS("Data/Processed/deathcounts_clean07-7-2020.rds")
+out<-readRDS("Data/Processed/deathcounts_clean11-8-2020.rds")
 
 # Population
 ###################################################################################################
