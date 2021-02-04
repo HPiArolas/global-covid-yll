@@ -49,3 +49,18 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `ages_at_death_global.rds` and `avgsd_age_death_both_global.rds`: Average age at death, age distribution at death
 - `results.gender.total.rds`: gender totals
 
+COVID-19 related 
+- `deathcounts_clean06-01-2021.rds`: Country, gender, and age specific death counts.
+- `matched_excess_deaths_delayed_06_01_2021.rds`: Estimated excess death counts.
+- `excess_dates_table_06_01_2021.rds`: Figures for estimated excess death counts.
+- `NYTExcessDeaths.csv`: Early data on excess death counts first published by the New York Times (not used in the final article).
+- `projections_covid_deaths.RDS`: Projected death counts in Walker et al. (2020), extracted from the working paper version of the article.
+
+Other causes of death
+- `other_cause_transport.rds`: 
+- `other_cause_heart.rds`:
+- `other_cause_substance.rds`:
+- `other_cause_drug.rds`:
+- `other_cause_flu.rds`:
+
+
