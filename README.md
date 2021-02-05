@@ -37,9 +37,7 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `C - Compilation main article measures.R`: creates measures cited throughout manuscript.
 - `C - Compilation final measures.R`: prepares data to create the measures cited throughout manuscript.
 - `C - Final tables.R`: creates tables in manuscript, and a few extra.
-
-(NEEDS REVIEW ADELINE)
-- `C - Figures.R`: creates plots, some used in manuscript. 
+- `C - Figures.R`: creates plots and some tables used in manuscript and SI. 
 
 # Main data file descriptions
 - `stmf_5.rds`: Short term mortality fluctuations in 5-years age groups
@@ -52,6 +50,7 @@ COVID-19 related
 - `excess_dates_table_06_01_2021.rds`: Figures for estimated excess death counts.
 - `NYTExcessDeaths.csv`: Early data on excess death counts first published by the New York Times (not used in the final article).
 - `projections_covid_deaths.RDS`: Projected death counts in Walker et al. (2020), extracted from the working paper version of the article.
+- `days_since_first_covid_data.csv`: Difference in days between latest day country COVID data is available and the first official COVID case in each country.
 
 Other causes of death
 - `other_cause_transport.rds`: Transport related death counts from IHME (2018).
