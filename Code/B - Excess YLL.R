@@ -58,8 +58,8 @@ if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID
 
 ## This uses data accounting for delays
 # Needs to be able to append well to the file out; just another column of deaths (or 3 if confidence intervals)
-if(!AL){excess<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/matched_excess_deaths_delayed_10_07_2020.rds")
-}else{excess<-readRDS("Data/Processed/matched_excess_deaths_delayed_10_07_2020.rds")}
+if(!AL){excess<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/matched_excess_deaths_delayed_06_01_2021.rds")
+}else{excess<-readRDS("Data/Processed/matched_excess_deaths_delayed_06_01_2021.rds")}
 
 
 # Choosing the max of excess or regular deaths
@@ -67,6 +67,9 @@ for (i in 1:length(excess$Country)){
 excess$Excess_Deaths[i]<-max(excess$Deaths[i],excess$Excess_Deaths[i])
 }
 #unique(excess$Country)
+
+# Renaming Date_excess to date
+colnames(excess)[5]<-c('Date')
 
 # SLE
 ###################################################################################################
@@ -117,6 +120,7 @@ yll.data.both<-vector("list",length=length(countries))
 
 ##  Both sexes
 ###################################################################################################
+
 for(i in 1:length(countries)){
   cat("Country=",paste(countries[i]),"\n")
   # choose national level data for both genders
@@ -176,11 +180,11 @@ for(i in 1:length(countries)){
 #names(yll.data.both)<-countries
 yll.data.both.all<-do.call(rbind,yll.data.both)
 # ver with countries 
-if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-excess-list.rds") 
-}else{saveRDS(yll.data.both,file="Data/Processed/yll-excess-list.rds") }
+if(!AL){saveRDS(yll.data.both,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-excess-list_06_01_2021.rds") 
+}else{saveRDS(yll.data.both,file="Data/Processed/yll-excess-list_06_01_2021.rds") }
 #this is the ver with all countries in one full dataframe
-if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-excess.rds") 
-}else{saveRDS(yll.data.both.all,file="Data/Processed/yll-excess.rds") }
+if(!AL){saveRDS(yll.data.both.all,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/yll-excess_06_01_2021.rds") 
+}else{saveRDS(yll.data.both.all,file="Data/Processed/yll-excess_06_01_2021.rds") }
 
 
 ###################################################################################################
@@ -223,8 +227,8 @@ for (i in 1:length(countries)){
 YLL.measures$Date<-Date
 
 # saving
-if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures.rds") 
-}else{saveRDS(YLL.measures,file="Data/Processed/YLL_excess_measures.rds")}
+if(!AL){saveRDS(YLL.measures,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_06_01_2021.rds") 
+}else{saveRDS(YLL.measures,file="Data/Processed/YLL_excess_measures_06_01_2021.rds")}
 
 ###################################################################################################
 ##
@@ -258,8 +262,8 @@ for (i in 1:length(countries)){
 YLL.measures.rate.esp$Date<-Date
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_rate_esp.rds") 
-}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/YLL_excess_measures_rate_esp.rds")}
+if(!AL){saveRDS(YLL.measures.rate.esp,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_rate_esp_06_01_2021.rds") 
+}else{saveRDS(YLL.measures.rate.esp,file="Data/Processed/YLL_excess_measures_rate_esp_06_01_2021.rds")}
 ###################################################################################################
 ##
 ##  AGGREGATION : YLL RATES GBD
@@ -292,8 +296,8 @@ for (i in 1:length(countries)){
 YLL.measures.rate.gbd$Date<-Date
 
 # saving
-if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_rate_gbd.rds") 
-}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/YLL_excess_measures_rate_gbd.rds")}
+if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_rate_gbd_06_01_2021.rds") 
+}else{saveRDS(YLL.measures.rate.gbd,file="Data/Processed/YLL_excess_measures_rate_gbd_06_01_2021.rds")}
 
 ###################################################################################################
 ##
@@ -302,8 +306,8 @@ if(!AL){saveRDS(YLL.measures.rate.gbd,file="/Users/Usuario/Dropbox/1 - A - A - R
 ##
 ###################################################################################################
 
-if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures.rds") 
-}else{dat<-readRDS(file="Data/Processed/YLL_excess_measures.rds")}
+if(!AL){dat<-readRDS(file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_06_01_2021.rds") 
+}else{dat<-readRDS(file="Data/Processed/YLL_excess_measures_06_01_2021.rds")}
 
 sumpop<-tapply(pop$Total,pop$Country,sum)
 dat$Pop<-sumpop[which(names(sumpop)%in%dat$Country)]
@@ -318,9 +322,9 @@ names(yll_rates)<-c("Country","Date"
 
 
 # saving
-if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_rate_gbd_cpop.rds") 
-}else{saveRDS(yll_rates,file="Data/Processed/YLL_excess_measures_rate_gbd_cpop.rds")}
+if(!AL){saveRDS(yll_rates,file="/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/YLL_excess_measures_rate_gbd_cpop_06_01_2021.rds") 
+}else{saveRDS(yll_rates,file="Data/Processed/YLL_excess_measures_rate_gbd_cpop_06_01_2021.rds")}
 
 # Saving the sample of countries used here
 sample.excess<-as.character(countries)
-saveRDS(sample.excess,file="Data/Processed/sample.excess.rds")
+saveRDS(sample.excess,file="Data/Processed/sample.excess_06_01_2021.rds")

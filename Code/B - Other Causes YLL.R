@@ -40,7 +40,7 @@ AL<-FALSE
 
 # User defined directory
 if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared')
-}else{setwd("~/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared")}
+}else{setwd("~/Adeline Research Dropbox/Adeline Lo/COVID-HPA/COVID-19 - YLL - Shared")}
 
 ###################################################################################################
 ##
