@@ -24,13 +24,14 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 
 
 # Code file descriptions
-
-(NEEDS REVIEW ENRIQUE)
-- `A - 1_Mortality_baseline.R`: mortality baseline etimation from weekly mortality.
-- `A - 2_Excess_mortality_2020`: calculations of 2020 excess mortality.
-
-
-- `A - Excess deaths`: prepares final deaths output.
+- `A0 - Functions.R`: declares functions for age harmonization, population interpolation, and excess mortality estimation.
+- `A1 - Weekly_deaths_ages_harmonization`: harmonizes STMF weekly mortality data into 5-year age groups.
+- `A2 - Weekly_exposures_interpolation`: interpolates annual population estimates into weekly.
+- `A3 - Deaths_master`: merges weekly deaths and population, and adding variables for baseline mortality estimation.
+- `A4 - Baseline_mortality`: estimates baseline mortality.
+- `A5 - Excess_mortality_ages_0_95`: summarizes excess mortality.
+- `A6 - Plots_deaths_baseline_excess`: plots excess mortality estimates.
+- `A7 - Excess_deaths_and_COVerAGE`: prepares final excess deaths output.
 - `B - Excess YLL.R`: calculations of YLL for excess mortality.
 - `B - Other Causes YLL.R`: calculations of YLL for other causes of mortality.
 - `B - Projected YLL.R`: calculations of YLL for projected scenarios.
@@ -44,7 +45,7 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `OffsetsHMD.rds`: Exposures for mortality baseline estimation
 
 COVID-19 related 
-(NEEDS REVIEW ENRIQUE) --> data to do excess mortality calculations!!!
+- `STMF.zip`: Short-Term Mortality Fluctuations database, including weekly all-cause mortality by age and sex for 38 countries.
 - `deathcounts_clean06-01-2021.rds`: Country, gender, and age specific death counts.
 - `matched_excess_deaths_delayed_06_01_2021.rds`: Estimated excess death counts.
 - `excess_dates_table_06_01_2021.rds`: Figures for estimated excess death counts.
@@ -63,6 +64,7 @@ Country lists
 - `countries_to_include_excess_06_01_2021.rds`: Excess mortality sample.
 - `full sample list.cs`: Full sample.
 - `gender_sample.csv`: Gender sample.
+- `country_codes.csv`: Country names and ISO codes in the STMF database.
 
 Population & life expectancy
 - `country_gbd_sle.2016.rds`: IMHE-GBD life expectancy.
@@ -70,6 +72,8 @@ Population & life expectancy
 - `country_male_sle_un.rds`: UN-World Population prospects male age specific life expectancy.
 - `country_female_sle_un.rds`: UN-World Population prospects female age specific life expectancy.
 - `pop_complete.csv`: UN-World Population prospects population.
+- `wpp_f.zip`: UN-World Population prospects population - Annual estimates in single-year of age for females.
+- `wpp_m.zip`: UN-World Population prospects population - Annual estimates in single-year of age for males.
 - `pop_std.gbd.RDS`: IMHE-GBD standard population.
 - `pop_std.esp.RDS`: European standard population.
 
