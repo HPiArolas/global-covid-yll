@@ -75,3 +75,4 @@ Population & life expectancy
 - `OffsetsHMD.rds`: Exposures for mortality baseline estimation, from HMD (2020)
 - `wpp_f.zip`: Annual estimates in single-year of age for females for mortality baseline estimation, from WPP (2019) (stored in OSF).
 - `wpp_m.zip`: Annual estimates in single-year of age for males for mortality baseline estimation, from WPP (2019) (stored in OSF).
+
