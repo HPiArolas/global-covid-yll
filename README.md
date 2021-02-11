@@ -44,7 +44,6 @@ Excess mortality related
 - `STMF.zip`: All-cause weekly mortality by age and sex for 38 countries. Short-Term Mortality Fluctuations database input files (Version Jan15, 2021), from HMD (2020).
 
 COVID-19 related 
-- `STMF.zip`: Short-Term Mortality Fluctuations database, including weekly all-cause mortality by age and sex for 38 countries.
 - `deathcounts_clean06-01-2021.rds`: Country, gender, and age specific death counts.
 - `matched_excess_deaths_delayed_06_01_2021.rds`: Estimated excess death counts.
 - `excess_dates_table_06_01_2021.rds`: Figures for estimated excess death counts.
