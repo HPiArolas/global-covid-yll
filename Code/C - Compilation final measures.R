@@ -41,7 +41,7 @@ library(stargazer)
 AL<-FALSE
 # User defined directory
 if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared')
-}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared")}
+}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-HPA/COVID-19 - YLL - Shared")}
 
 
 ###################################################################################################
@@ -63,11 +63,13 @@ if(!AL){gender_sample<-read.csv('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - 
   gender_sample<-read.csv('Data/gender_sample.csv')}
 gender_sample<-as.character(data.frame(gender_sample)[,1])
 # Excess sample
-excess_sample<-readRDS("Data/Processed/sample.excess.rds")
+excess_sample<-readRDS("Data/Processed/sample.excess_06_01_2021.rds")
+
+
 
 # Original sample of deaths
 ###################################################################################################
-out<-readRDS("Data/Processed/deathcounts_clean11-8-2020.rds")
+out<-readRDS("Data/Processed/deathcounts_clean06-01-2021.rds")
 
 # Population
 ###################################################################################################
@@ -94,12 +96,12 @@ YLL.f.age.all<-readRDS("Data/Processed/yll-f.rds")
 
 # YLLs COVID-19 - excess
 ###################################################################################################
-YLL_excess_measures<-readRDS("Data/Processed/YLL_excess_measures.rds")
-YLL_excess_measures_rate_esp<-readRDS("Data/Processed/YLL_excess_measures_rate_esp.rds")
-YLL_excess_measures_rate_gbd<-readRDS("Data/Processed/YLL_excess_measures_rate_gbd.rds")
-YLL_excess_measures_rate_gbd_cpop<-readRDS("Data/Processed/YLL_excess_measures_rate_gbd_cpop.rds")
-YLL_excess_list<-readRDS("Data/Processed/yll-excess-list.rds")
-excess_dates_table<-readRDS('Data/Processed/excess_dates_table_10_07_2020.RDS') 
+YLL_excess_measures<-readRDS("Data/Processed/YLL_excess_measures_06_01_2021.rds")
+YLL_excess_measures_rate_esp<-readRDS("Data/Processed/YLL_excess_measures_rate_esp_06_01_2021.rds")
+YLL_excess_measures_rate_gbd<-readRDS("Data/Processed/YLL_excess_measures_rate_gbd_06_01_2021.rds")
+YLL_excess_measures_rate_gbd_cpop<-readRDS("Data/Processed/YLL_excess_measures_rate_gbd_cpop_06_01_2021.rds")
+YLL_excess_list<-readRDS("Data/Processed/yll-excess-list_06_01_2021.rds")
+excess_dates_table<-readRDS('Data/Processed/excess_dates_table_06_01_2021.RDS') 
 
 
 # YLLs COVID-19 - projected
@@ -136,7 +138,7 @@ YLL.measures.rate.gbd_flu<-readRDS("Data/Processed/flu_YLL_measures_rate_gbd.rds
 YLL.measures.rate.cpop_flu<-readRDS("Data/Processed/flu_YLL_measures_rate_cpop.rds")
 
 
-View(YLL.measures_flu)
+#View(YLL.measures_flu)
 ###################################################################################################
 ##
 ##  PREPARATIONS
@@ -398,6 +400,7 @@ for (i in 1:length(YLL.covid.by_country$Country)){
 ###################################################################################################   
 
 # Weighting gendered deaths per male by the inverse of YLL rates male to female leads to equalizing YLL rates.
+# and with a correction for population rates.
 
 initial_guess<-data.frame(Country=total.deaths.country.all$Country,
                           Equal_prop=1/YLL.covid.by_country$YLL_rates_male_to_female[which(is.element(YLL.covid.by_country$Country,gender_sample))],
@@ -466,41 +469,40 @@ for (i in 1:length(YLL.b.age)){
 ################################################################################################### 
 
 for (i in 1:length(YLL.b.age)){
+  print(i)
   # both genders
   tmp.var<-c('YLL_b','YLL_b_cum')
   tmp.var2<-c('YLL.un.b','YLL.un.b.cum')
   Age_distribution[[i]][,tmp.var]<-results.YLL.b.age.country[[i]][,tmp.var2]
+  tmp_country<-unique(Age_distribution[[i]]$Country)
   # males
   tmp.var<-c('YLL.un.m')
   Age_distribution[[i]][,tmp.var]<-if(nrow(subset(results.YLL.gender.age.country.all,Country==
-                                                  as.character(Age_distribution[[i]]$Country),YLL.un.m))==0){
+                                                  as.character(tmp_country),YLL.un.m))==0){
                                   rep(NA,20)
                                   }else{
-                                  subset(results.YLL.gender.age.country.all,Country==as.character(Age_distribution[[i]]$Country),YLL.un.m)}
+                                  subset(results.YLL.gender.age.country.all,Country==as.character(tmp_country),YLL.un.m)}
   tmp.var<-c('YLL.un.m.cum')
   Age_distribution[[i]][,tmp.var]<-if(nrow(subset(results.YLL.gender.age.country.all,Country==
-                                                    as.character(Age_distribution[[i]]$Country),YLL.un.m.cum))==0){
+                                                    as.character(tmp_country),YLL.un.m.cum))==0){
                                   rep(NA,20)
                                   }else{
-                                  subset(results.YLL.gender.age.country.all,Country==as.character(Age_distribution[[i]]$Country),YLL.un.m.cum)}
+                                  subset(results.YLL.gender.age.country.all,Country==as.character(tmp_country),YLL.un.m.cum)}
   # females
   tmp.var<-c('YLL.un.f')
   Age_distribution[[i]][,tmp.var]<-if(nrow(subset(results.YLL.gender.age.country.all,Country==
-                                                  as.character(Age_distribution[[i]]$Country),YLL.un.f))==0){
+                                                  as.character(tmp_country),YLL.un.f))==0){
                                   rep(NA,20)
                                   }else{
-                                  subset(results.YLL.gender.age.country.all,Country==as.character(Age_distribution[[i]]$Country),YLL.un.f)}
+                                  subset(results.YLL.gender.age.country.all,Country==as.character(tmp_country),YLL.un.f)}
   tmp.var<-c('YLL.un.f.cum')
   Age_distribution[[i]][,tmp.var]<-if(nrow(subset(results.YLL.gender.age.country.all,Country==
-                                                  as.character(Age_distribution[[i]]$Country),YLL.un.f.cum))==0){
+                                                  as.character(tmp_country),YLL.un.f.cum))==0){
                                   rep(NA,20)
                                   }else{
-                                  subset(results.YLL.gender.age.country.all,Country==as.character(Age_distribution[[i]]$Country),YLL.un.f.cum)}      
+                                  subset(results.YLL.gender.age.country.all,Country==as.character(tmp_country),YLL.un.f.cum)}      
 }
-
-# Fixing Pakistan
-Age_distribution[[29]]<-Age_distribution[[29]][1:20,]
-
+names(Age_distribution)<-unlist(lapply(Age_distribution, function(x) as.character(unique(x$Country))))
 
 ## Average age at which people die from covid, by males and females
 ###################################################################################################
@@ -609,7 +611,7 @@ for (i in 1:length(results.YLL.b.cutt_off.country$Country)){
 }  
 
 
-## YLL by ages total -- "gobal" sum
+## YLL by ages total -- "global" sum
 ###################################################################################################
 # Frame to store
 results.YLL.b.age.total<-data.frame(Age=YLL.b.age[[1]]$Age)
@@ -722,16 +724,19 @@ results.proj.country[,tmp.var]<-(results.proj.country[,tmp.var2]/sumpop)*100000
 
 ## Projections: adding values for real deaths
 ###################################################################################################
+matched_countries<-results.proj.country$Country
+matched_countries[which(matched_countries=="England")]<-"United Kingdom" #so this matches with countries in YLL.covid.by_country object's country names
 
+sub_YLL.covid.by_country<-YLL.covid.by_country[match(matched_countries,YLL.covid.by_country$Country),] #allows for matched ordering for UK
 results.proj.country<-data.frame(
-                        Country=results.proj.country$Country,
-                        Date=YLL.covid.by_country$Date,
-                        YLL.b_abs=YLL.covid.by_country$YLL.b_abs,
-                        YLL.b.proj_min=results.proj.country$YLL.un.b_min , 
-                        YLL.b.proj_max=results.proj.country$YLL.un.b_max,
-                        YLL.b_rates=YLL.covid.by_country$YLL.b_rates,
-                        YLL.rates.b_min=results.proj.country$YLL.rates.un.b_min,
-                        YLL.rates.b_max=results.proj.country$YLL.rates.un.b_max)
+                        Country=results.proj.country$Country,#42
+                        Date= sub_YLL.covid.by_country$Date, #YLL.covid.by_country$Date[match(results.proj.country$Country,YLL.covid.by_country$Country)],#85
+                        YLL.b_abs= sub_YLL.covid.by_country$YLL.b_abs,
+                        YLL.b.proj_min=results.proj.country$YLL.un.b_min , #42
+                        YLL.b.proj_max=results.proj.country$YLL.un.b_max,#42
+                        YLL.b_rates=sub_YLL.covid.by_country$YLL.b_rates,
+                        YLL.rates.b_min=results.proj.country$YLL.rates.un.b_min,#42
+                        YLL.rates.b_max=results.proj.country$YLL.rates.un.b_max)#42
                         
 
 results.proj.country$YLL.rates.ratio.current_projected_min<-results.proj.country$YLL.rates.b_min/results.proj.country$YLL.b_rates
@@ -773,8 +778,8 @@ YLL.comparison_excess$Ratio_excess_death<-YLL.comparison_excess$YLL_rates_b_exce
 YLL.comparison_excess$Date_excess<-excess_dates_table$Date_excess
 YLL.comparison_excess$Date_coverage<-excess_dates_table$Date_coverage
 
-View(YLL_excess_measures)
-
+#View(YLL_excess_measures)
+#View(YLL.comparison_excess)
 
 
 ###################################################################################################
@@ -787,7 +792,7 @@ View(YLL_excess_measures)
 AL<-FALSE
 # User defined directory
 if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Final results')
-}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared/Data/Final results")}
+}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-HPA/COVID-19 - YLL - Shared/Data/Final results")}
 
 
 ## Total number of deaths, both genders combined
@@ -831,7 +836,7 @@ saveRDS(results.YLL.b.age.total,file="YLL_lost_by_age_global.rds")
 saveRDS(results.YLL.b.cutt_off.global,file="YLL_lost_by_age_global_cut_offs.rds")
 
 ## Excess deaths
-saveRDS(YLL.comparison_excess,file="YLL.comparison_excess.rds")
+saveRDS(YLL.comparison_excess,file="YLL.comparison_excess_06_01_2021.rds")
 
 
 ## Projections vs current

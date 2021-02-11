@@ -1,0 +1,40 @@
+Country,PopCode,wpp_code
+Australia,AUS2,Australia
+Austria,AUT,Austria
+Belgium,BEL,Belgium
+Bulgaria,BGR,Bulgaria
+Canada,CAN,Canada
+Switzerland,CHE,Switzerland
+Chile,CHL,Chile
+Czechia,CZE,Czechia
+Germany,DEUTNP,Germany
+Denmark,DNK,Denmark
+Spain,ESP,Spain
+Estonia,EST,Estonia
+Finland,FIN,Finland
+France,FRATNP,France
+Northern Irland,GBR_NIR,
+Scotland,GBR_SCO,
+England_Wales,GBRTENW,
+Greece,GRC,Greece
+Croatia,HRV,Croatia
+Hungary,HUN,Hungary
+Iceland,ISL,Iceland
+Israel,ISR,Israel
+Italy,ITA,Italy
+Republic of Korea,KOR,Republic of Korea
+Lithuania,LTU,Lithuania
+Luxembourg,LUX,Luxembourg
+Latvia,LVA,Latvia
+Netherlands,NLD,Netherlands
+Norway,NOR,Norway
+New Zealand,NZL_NP,New Zealand
+Poland,POL,Poland
+Portugal,PRT,Portugal
+Russia,RUS,Russian Federation
+Slovakia,SVK,Slovakia
+Slovenia,SVN,Slovenia
+Sweden,SWE,Sweden
+United States,USA,United States of America
+United Kingdom,GBR,United Kingdom
+Taiwan,TWN,Taiwan

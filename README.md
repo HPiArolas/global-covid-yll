@@ -52,11 +52,11 @@ COVID-19 related
 - `days_since_first_covid_data.csv`: Difference in days between latest day country COVID data is available and the first official COVID case in each country.
 
 Other causes of death
-- `other_cause_transport.rds`: Transport related death counts from IHME (2018).
-- `other_cause_heart.rds`: Heart related death counts from IHME (2018).
-- `other_cause_substance.rds`: Substance related death counts from IHME (2018).
-- `other_cause_drug.rds`: Drug related death counts from IHME (2018).
-- `other_cause_flu.rds`: Flu related death counts from IHME (2018).
+- `other_cause_transport.rds`: Transport related death counts, from IHME (2018).
+- `other_cause_heart.rds`: Heart related death counts, from IHME (2018).
+- `other_cause_substance.rds`: Substance related death counts, from IHME (2018).
+- `other_cause_drug.rds`: Drug related death counts, from IHME (2018).
+- `other_cause_flu.rds`: Flu related death counts, from IHME (2018).
 
 Country lists
 - `countries_to_include_excess_06_01_2021.rds`: Excess mortality sample.
@@ -75,5 +75,4 @@ Population & life expectancy
 - `OffsetsHMD.rds`: Exposures for mortality baseline estimation, from HMD (2020)
 - `wpp_f.zip`: Annual estimates in single-year of age for females for mortality baseline estimation, from WPP (2019) (stored in OSF).
 - `wpp_m.zip`: Annual estimates in single-year of age for males for mortality baseline estimation, from WPP (2019) (stored in OSF).
-
 

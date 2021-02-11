@@ -50,8 +50,8 @@ if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID
 ###################################################################################################
 # COVID-19 deaths
 ###################################################################################################
-if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/deathcounts_clean07-7-2020.rds")
-}else{out<-readRDS("Data/Processed/deathcounts_clean07-7-2020.rds")}
+if(!AL){out<-readRDS("/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Processed/deathcounts_clean06-01-2021.rds")
+}else{out<-readRDS("Data/Processed/deathcounts_clean06-01-2021.rds")}
 
 # COVID-19 projected deaths
 ###################################################################################################
@@ -109,11 +109,13 @@ yll.data.both<-vector("list",length=length(countries))
 
 ##  Both sexes
 ###################################################################################################
+#i<-11
+
 for(i in 1:length(countries)){
   cat("Country=",countries[i],"\n")
   # choose national level data for both genders
   c<-subset(projected,as.character(Country)==countries[i])
-  d<-subset(out,as.character(Country)==countries[i])
+  d<-subset(out,Country==countries[i]&Sex=="b")
   d<-subset(d,Date==max(d$Date))
   Age_Projected_Min<-(d$Deaths/sum(d$Deaths))*c$proj.deaths.min
   Age_Projected_Max<-(d$Deaths/sum(d$Deaths))*c$proj.deaths.max

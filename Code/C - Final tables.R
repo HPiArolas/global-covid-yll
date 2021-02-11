@@ -28,8 +28,10 @@ library(dplyr)
 #library(viridis)
 library(wpp2019)
 library(stargazer)
-
-
+library(kableExtra)
+library(sjPlot)
+library(sjmisc)
+library(tidyverse)
 ###################################################################################################
 ##
 ##  DIRECTORY
@@ -37,13 +39,13 @@ library(stargazer)
 ##
 ###################################################################################################
 
-AL<-FALSE
+AL<-TRUE
 # User defined directory
 if(!AL){setwd('/Users/Usuario/Dropbox/1 - A - A - Recerca/1 - Current work/COVID-19 - YLL - Shared/Data/Final results')
-}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-19 - YLL - Shared/Data/Final results")}
+}else{setwd("/Users/adelinelo/Adeline Research Dropbox/Adeline Lo/COVID-HPA/COVID-19 - YLL - Shared/Data/Final results")}
 
 
-excess<-readRDS('YLL.comparison_excess.rds') ### need dates
+excess<-readRDS('YLL.comparison_excess_06_01_2021.rds') ### need dates
 projections<-readRDS('YLL_projections.rds')
 other_causes<-readRDS('YLL_other_causes_comparison.rds')
 age_distribution<-readRDS('YLL_covid19_age_cummulative.rds') 
@@ -77,7 +79,7 @@ test<-data.frame(covid_main$Date)
 
 # Test sample with YLL rates at least over 10
 sample_affected<-data.frame(
-  Country=covid_main$Country[which(covid_main$Deaths>6)])
+  Country=covid_main$Country[which(covid_main$Deaths>0)])
 # Keep this sample for later
 write.csv(sample_affected,file='sample_affected.csv')
 saveRDS(sample_affected,file='sample_affected.RDS')
@@ -116,7 +118,19 @@ table_projections<-data.frame(
 
 write.csv(table_projections,file='table_projections.csv')
 
+### Table S3:
+#Projection Table with Stargazer
 stargazer(table_projections,summary=FALSE, rownames=FALSE)
+#Projection Table with Kable
+kable(table_projections,format="latex",booktabs = T, longtable = T,linesep = "",digits = 3
+      ,col.names = c("Country", "Deaths Current","Projected", "YLL rates Current",
+                     "Projected", "Ratio of YLL Current over proj.")
+      , caption = "Current and projected: COVID-19 deaths and YLL rates."
+      ,label = "S3")%>%
+  kable_styling(latex_options=c("striped","hold_position","scale_down","repeat_header"))%>%
+  row_spec(0, bold=T, color="black",background="lightblue")%>%
+  column_spec(2:5, width = "2cm")%>%
+  column_spec(6, width = "2.5cm")
 
 table_ratio_projections<-data.frame( Country=projections$Country, YLL_projection_ratio=projections$YLL.rates.ratio.current_projected_min)
 
