@@ -39,6 +39,7 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `C - Figures.R`: creates plots and some tables used in manuscript and SI. 
 
 # Main data file descriptions
+
 Excess mortality related 
 - `STMF.zip`: All-cause weekly mortality by age and sex for 38 countries. Short-Term Mortality Fluctuations database input files (Version Jan15, 2021), from HMD (2020).
 
