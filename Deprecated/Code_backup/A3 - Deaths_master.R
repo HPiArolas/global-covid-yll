@@ -1,7 +1,7 @@
 # Description:
 # Creating the master database with weekly deaths and exposures
 
-source(here("Code/A00_functions.R"))
+source(here("Code/A0 - Functions.R"))
 
 ctr_codes <- read_csv(here("Data", "country_codes.csv")) %>% 
   mutate(PopCode = ifelse(PopCode == "AUS2", "AUS", PopCode))

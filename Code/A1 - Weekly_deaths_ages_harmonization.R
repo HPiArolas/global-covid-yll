@@ -2,12 +2,12 @@
 # Weekly all-cause mortality age harmonization in 5-year age groups
 
 library(here)
-source(here("Code/A00_functions.R"))
+source(here("Code/A0 - Functions.R"))
+
 # Loading data
 ##############
-
-# Input weekly mortality data from the STMF, 
-# downloaded on January XX 2021
+# Input weekly mortality data from input files in the STMF, 
+# Data version: January 15 2021
 zipdf <- unzip(here("Data", "STMFinput.zip"), list = TRUE)
 
 # loading all cause deaths from all countries in STMF
@@ -25,7 +25,8 @@ ctr_codes <- read_csv(here("Data", "country_codes.csv")) %>%
   mutate(PopCode = ifelse(PopCode == "AUS2", "AUS", PopCode)) %>% 
   filter(PopCode != "GBR")
 
-# recoding vectors
+
+# Population exposures (offsets) from HMD for age harmonization
 HMDcountries <- ctr_codes %>% pull(PopCode)
 countries <- ctr_codes %>% pull(Country)
 names(countries) <- HMDcountries
@@ -49,7 +50,7 @@ OffsetsL <- lapply(HMDcountries, function(xyz, us, pw, countries){
 names(OffsetsL) <- countries
 # pad Offsets rightward.
 
-# Use the last available year until 2020
+# Use population in the last available year until 2020
 Offsets_test <- 
   OffsetsL %>% 
   bind_rows() %>% 
@@ -57,13 +58,13 @@ Offsets_test <-
   do(pad_offsets(chunk = .data)) %>% 
   ungroup()
 
-# problems with exposures in Canada, NA values in several ages
 Offsets_test %>% 
   filter(is.na(Population)) %>% 
   select(Country) %>% 
   unique()
 
-# Canada has missing values in exposures, so we use population estimates
+# Canada has missing values in exposures, so we use population 
+# estimates, instead
 can_pop <- readHMDweb("CAN", "Population", us, pw) %>% 
   filter(Year >= 2010) %>%
   select(Year, Age, Female1, Male1, Total1) %>% 
@@ -150,7 +151,6 @@ db_d4 <- read_rds(here("Data", "stmf.rds"))
 #################################################
 
 # grouping ages 0-4 and 90+ in all countries 
-
 db_d5 <- db_d4 %>% 
   select(Country, PopCode, Year, Week, Sex, Age, Deaths) %>% 
   filter(Age != "UNK" & Age != "TOT") %>% 
@@ -185,13 +185,11 @@ last_weeks <- db_ok %>%
   group_by(PopCode) %>% 
   summarise(max_week = max(Week))
 
-unique(db_ok$PopCode)
-
+# weeks by country
 table(db_ok$PopCode)
 
 # series that need splitting of deaths into 5-year age intervals
 # countries with weeks that contain fewer than 19 age groups
-
 db_to_ungr <- db_d6 %>%
   filter(Year >= 2010,
          AgeGroups < 19) %>% 
@@ -217,16 +215,9 @@ db_to_ungr2 <- db_to_ungr %>%
 # ungrouping all ages for age intervals larger than 5-year
 ##########################################################
 
-# # for testing with a feww weeks
-stmf <- db_to_ungr2 %>%
-  filter(Country == "Canada",
-         Sex == "b",
-         Week >= 38,
-         Year >= 2020)
-
 stmf <- db_to_ungr2
 
-# Using Tim's functions
+# Using PCLM functions to split age groups
 start_time <- Sys.time()
 stmf_out <-
   split(stmf,
@@ -242,7 +233,7 @@ end_time - start_time
 stmf_out2 <- stmf_out %>% 
   bind_rows()
 
-# grouping in 5-year age intervals
+# Grouping in ages in 5-year intervals
 stmf_out3 <- stmf_out2 %>% 
   mutate(Age = floor(Age / 5) * 5,
          Age = ifelse(Age > 90, 90, Age)) %>% 
@@ -251,11 +242,11 @@ stmf_out3 <- stmf_out2 %>%
   ungroup() %>% 
   mutate(Source = "Ungrouped")
 
+# appending all (original and ungrouped) populations together
 db_ok2 <- db_ok %>%
   select(Country, PopCode, Year, Week, Sex, Age, Deaths) %>% 
   mutate(Source = "Original")
 
-# appending original and ungrouped populations
 db_deaths <- bind_rows(db_ok2, stmf_out3) %>% 
   arrange(Country, PopCode, Year, Week, Sex, Age) 
 

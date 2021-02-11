@@ -1,8 +1,9 @@
 # Description:
 # Correspondance of dates and deaths between excess and confirmed deaths 
 
-source(here("Code/A00_functions.R"))
+source(here("Code/A0 - Functions.R"))
 
+# loading data of confirmed deaths from COVerAGE-DB
 data_coverage <- read_rds(here("Data", "out2_06-01-2021.rds")) %>% 
   mutate(Date = ymd(Date),
          Country = as.character(Country)) %>% 
@@ -12,6 +13,7 @@ data_coverage <- read_rds(here("Data", "out2_06-01-2021.rds")) %>%
          !(Country == "Germany" & grepl("ECDC", Code)),
          !(Country == "Czechia" & grepl("ECDC", Code)))
 
+# loading data of excess deaths
 data_excess <- read_csv(here("Data", "covid_excess_pclm_5_ages_0_95.csv")) %>% 
   rename(Date_ex = last_date,
          Excess_Deaths = excess,
@@ -24,6 +26,7 @@ data_excess <- read_csv(here("Data", "covid_excess_pclm_5_ages_0_95.csv")) %>%
 
 cts_excess <- unique(data_excess$Country)
 
+# Finding correspondance dates between Excess estimates and COVerAGE-DB
 dates_excess <- data_excess %>% 
   select(Country, Date_ex) %>% 
   unique()
@@ -46,7 +49,8 @@ closest_dates <- data_coverage2 %>%
 dates_coverage <- closest_dates %>% 
   select(Country, Date) %>% 
   mutate(keep = 1)
-  
+
+# deaths from both sources by country in the closest available date  
 data_deaths <- data_coverage2 %>% 
   left_join(dates_coverage) %>% 
   filter(keep == 1) %>% 
@@ -55,16 +59,17 @@ data_deaths <- data_coverage2 %>%
   rename(Date_excess = Date_ex,
          Date_coverage = Date)
 
+# table with correspondent dates from each source
 excess_dates_table <- data_deaths %>% 
   select(Country, Date_excess, Date_coverage) %>% 
   unique()
 
+# countries with excess estimates to be included
 ctrs_to_include <- excess_dates_table %>% 
   select(Country) %>% 
   unique()
 
-dim(ctrs_to_include)
-
+# saving data
 write_rds(data_deaths, here("Data", "matched_excess_deaths_delayed.rds"))
 write_rds(excess_dates_table, here("Data", "excess_dates_table.rds"))
 write_rds(ctrs_to_include, here("Data", "countries_to_include_excess.rds"))

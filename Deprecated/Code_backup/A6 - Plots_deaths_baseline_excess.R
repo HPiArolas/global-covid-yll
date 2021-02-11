@@ -1,7 +1,7 @@
 # Description:
 # Plots of excess mortality estimates
 
-source(here("Code/A00_functions.R"))
+source(here("Code/A0 - Functions.R"))
 
 if (!dir.exists(here("Figures"))){
   dir.create(here("Figures"))

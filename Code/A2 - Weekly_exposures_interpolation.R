@@ -2,7 +2,7 @@
 # Weekly exposures interpolation
 
 library(here)
-source(here("Code", "A00_functions.R"))
+source(here("Code/A0 - Functions.R"))
 ctr_codes <- read_csv(here("Data", "country_codes.csv"))
 
 # Country names and codes 
@@ -17,7 +17,10 @@ ctrs <- ctr_codes %>%
   dplyr::pull(wpp_code)
 
 
-# loading annual and single-year of age population estimates from the WPP
+# loading "Annual and single age data" population estimates 
+# from the  from the WPP, available in:
+# "https://population.un.org/wpp/Download/Standard/Interpolated/
+# A hard copy of these files are stored in the project's OSF repository
 #########################################################################
 
 # female and male estimates stored in the OSF project
@@ -29,6 +32,7 @@ osf_retrieve_file("tn4zh") %>%
   osf_download(conflicts = "overwrite",
                path = "Data") 
 
+# filtering the countries in the STMF
 pop_m <- read_xlsx(unzip(here("Data", "wpp_m.zip")),
                    skip = 16) %>% 
   select(3, 8:109) %>% 
@@ -51,11 +55,13 @@ pop_f <- read_xlsx(unzip(here("Data", "wpp_f.zip")),
   mutate(Age = as.integer(Age),
          Sex = "f")
 
+# clear downloaded files from disk
 file.remove(here("wpp_f.xlsx"), 
             here("wpp_m.xlsx"),
             here("Data", "wpp_f.zip"), 
             here("Data", "wpp_m.zip"))
 
+# original population data in thousands, converting it to counts
 pop_wpp <- bind_rows(pop_m, pop_f) %>% 
   mutate(Pop = as.numeric(Pop) * 1000) 
 
@@ -100,6 +106,9 @@ pop_hmd <-
   ungroup() %>% 
   filter(Sex != "b")
 
+# Appending WPP and HMD data
+# grouping it in 5-year age intervals
+# assigning week 27 to each estimate
 pop_all <- 
   bind_rows(pop_hmd, pop_wpp) %>% 
   mutate(Age = floor(Age / 5) * 5) %>% 
@@ -112,14 +121,13 @@ pop_all <-
 # Interpolating population estimates to weeks using splines
 ###########################################################
 
-# weeks by year between 2000 and 2020
+# dataframe with weeks by year between 2000 and 2020
 db_w <- expand_grid(Year = 2000:2020, Week = 1:52) %>% 
   bind_rows(tibble(Year = c(2004, 2009, 2015, 2020), Week = 53)) %>% 
   arrange(Year, Week) %>% 
   mutate(t = 1:n())
 
 ages <- unique(pop_all$Age)
-
 ctrs <- unique(pop_all$Country)
 
 inters_pop <- NULL
