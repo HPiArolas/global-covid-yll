@@ -16,10 +16,10 @@ All code is included in the `Code` folder and data in `Data` folder, which repro
 Data are drawn from several resources.
 - Global Burden of Disease Collaborative Network. Global Burden of Disease Study 2017 (GBD 2017) Results.
 Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018. Available from http://ghdx.healthdata.org/gbd-results-tool.
-- P. G. T. Walker,et al., The impact of COVID-19 and strategies for mitigation and suppressionin low- and middle-income countries, Science (2020).
-- T. Riffe, E. Acosta. et. al. “COVerAGE-DB: A database of COVID-19 Cases and Deaths by Age.” OSF, 15 June 2020. doi:10.17605/OSF.IO/MPWJQ.
-- United Nations, Department of Economic and Social Affairs & Population Division. World population prospects Highlights, 2019 revision Highlights, 2019 revision (2019). OCLC: 1142478963.
-- Human Mortality Database (2020). Available at www.mortality.org or www.humanmortality.de publisher: University of California, Berkeley (USA), and Max Planck Institute for Demographic Research (Germany).
+- P. G. T. Walker, et al., The impact of COVID-19 and strategies for mitigation and suppressionin low- and middle-income countries, Science (2020).
+- T. Riffe, E. Acosta, and the COVerAGE-DB team, “COVerAGE-DB: A database of COVID-19 Cases and Deaths by Age.” OSF, 15 June 2020. doi:10.17605/OSF.IO/MPWJQ.
+- United Nations, Department of Economic and Social Affairs & Population Division. World population prospects Highlights, 2019 revision Highlights, 2019 revision - WPP (2019). OCLC: 1142478963.
+- Human Mortality Database - HMD (2020). Available at www.mortality.org or www.humanmortality.de publisher: University of California, Berkeley (USA), and Max Planck Institute for Demographic Research (Germany).
 
 
 
@@ -27,11 +27,9 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `A0 - Functions.R`: declares functions for age harmonization, population interpolation, and excess mortality estimation.
 - `A1 - Weekly_deaths_ages_harmonization`: harmonizes STMF weekly mortality data into 5-year age groups.
 - `A2 - Weekly_exposures_interpolation`: interpolates annual population estimates into weekly.
-- `A3 - Deaths_master`: merges weekly deaths and population, and adding variables for baseline mortality estimation.
-- `A4 - Baseline_mortality`: estimates baseline mortality.
-- `A5 - Excess_mortality_ages_0_95`: summarizes excess mortality.
-- `A6 - Plots_deaths_baseline_excess`: plots excess mortality estimates.
-- `A7 - Excess_deaths_and_COVerAGE`: prepares final excess deaths output.
+- `A3 - Baseline_mortality`: estimates baseline mortality.
+- `A4 - Excess_mortality_ages_0_95`: summarizes excess mortality.
+- `A5 - Excess_and_COVerAGE_deaths`: prepares final excess deaths output.
 - `B - Excess YLL.R`: calculations of YLL for excess mortality.
 - `B - Other Causes YLL.R`: calculations of YLL for other causes of mortality.
 - `B - Projected YLL.R`: calculations of YLL for projected scenarios.
@@ -41,8 +39,9 @@ Seattle, United States: Institute for Health Metrics and Evaluation (IHME), 2018
 - `C - Figures.R`: creates plots and some tables used in manuscript and SI. 
 
 # Main data file descriptions
-- `stmf_5.rds`: Short term mortality fluctuations in 5-years age groups
-- `OffsetsHMD.rds`: Exposures for mortality baseline estimation
+
+Excess mortality related 
+- `STMF.zip`: All-cause weekly mortality by age and sex for 38 countries. Short-Term Mortality Fluctuations database input files (Version Jan15, 2021), from HMD (2020).
 
 COVID-19 related 
 - `STMF.zip`: Short-Term Mortality Fluctuations database, including weekly all-cause mortality by age and sex for 38 countries.
@@ -67,14 +66,15 @@ Country lists
 - `country_codes.csv`: Country names and ISO codes in the STMF database.
 
 Population & life expectancy
-- `country_gbd_sle.2016.rds`: IMHE-GBD life expectancy.
-- `country_both_sle_un.rds`: UN-World Population prospects age specific life expectancy.
-- `country_male_sle_un.rds`: UN-World Population prospects male age specific life expectancy.
-- `country_female_sle_un.rds`: UN-World Population prospects female age specific life expectancy.
-- `pop_complete.csv`: UN-World Population prospects population.
-- `wpp_f.zip`: UN-World Population prospects population - Annual estimates in single-year of age for females.
-- `wpp_m.zip`: UN-World Population prospects population - Annual estimates in single-year of age for males.
-- `pop_std.gbd.RDS`: IMHE-GBD standard population.
+- `country_gbd_sle.2016.rds`: life expectancy, from IHME (2018).
+- `country_both_sle_un.rds`: Age specific life expectancy, from WPP (2019).
+- `country_male_sle_un.rds`: Male age specific life expectancy, from WPP (2019).
+- `country_female_sle_un.rds`: Female age specific life expectancy, from WPP (2019).
+- `pop_complete.csv`: Population estimates, from WPP (2019).
+- `pop_std.gbd.RDS`: Standard population, from IHME (2018).
 - `pop_std.esp.RDS`: European standard population.
+- `OffsetsHMD.rds`: Exposures for mortality baseline estimation, from HMD (2020)
+- `wpp_f.zip`: Annual estimates in single-year of age for females for mortality baseline estimation, from WPP (2019) (stored in OSF).
+- `wpp_m.zip`: Annual estimates in single-year of age for males for mortality baseline estimation, from WPP (2019) (stored in OSF).
 
 
