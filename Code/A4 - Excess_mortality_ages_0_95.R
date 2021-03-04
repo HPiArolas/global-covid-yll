@@ -1,6 +1,6 @@
 # Description:
 # Summarize EXCESS deaths since week 8, 2020, in all countries by sex and age 
-
+library(here)
 source(here("Code/A0 - Functions.R"))
 
 # mortality baseline estimates

@@ -24,6 +24,7 @@ pkgs <- c("tidyverse",
           "parallelsugar",
           "ISOweek",
           "scales",
+          "remotes",
           "osfr")
 
 # required packages for baseline estimation
@@ -33,6 +34,9 @@ pkgs_bsl <- c("stats",
               "gnm",
               'doParallel', 
               'foreach')
+
+packages_git <- c("parallelsugar")
+
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(pkgs))==0) {
@@ -49,8 +53,16 @@ if(!sum(!p_isinstalled(pkgs_bsl))==0) {
   )
 }
 
+# install from github if necessary
+if (!p_isinstalled("parallelsugar")){
+  library(remotes)
+  install_github("nathanvan/parallelsugar")
+}
+
 # loading basic packages
 p_load(pkgs, character.only = TRUE)
+# loading github packages
+p_load(packages_git, character.only = TRUE)
 
 
 # HMD user and password
